@@ -1,0 +1,95 @@
+{% extends "invoice/base.html" %}
+{% load static %}
+
+{% block main_content %}
+<div class="content-wrapper">
+    <div class="container-full">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="d-flex align-items-center">
+                <div class="me-auto">
+                    <h4 class="page-title">Change Password</h4>
+                    <div class="d-inline-block align-items-center">
+                        <nav>
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="#"><i class="mdi mdi-home-outline"></i></a></li>
+                                <li class="breadcrumb-item active" aria-current="page">First Login Password Change</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>	  
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row justify-content-center g-0">
+                        <div class="col-lg-5 col-md-5 col-12">
+                            <div class="bg-white rounded10 shadow-lg">
+                                <div class="content-top-agile p-20 pb-0">
+                                    <h2 class="text-primary">Set Your Password</h2>
+                                    <p class="mb-0">You need to change your temporary password before continuing.</p>
+                                    {% if messages %}
+                                        {% for message in messages %}
+                                            <div class="alert alert-{{ message.tags }}" role="alert">
+                                                {{ message }}
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <div class="p-40">
+                                    <form action="{% url 'first_login_password_change' %}" method="post">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text bg-transparent"><i class="ti-lock"></i></span>
+                                                <input type="password" name="old_password" class="form-control ps-15 bg-transparent" placeholder="Current Temporary Password" required>
+                                            </div>
+                                            {% if form.old_password.errors %}
+                                                <div class="text-danger">
+                                                    {{ form.old_password.errors }}
+                                                </div>
+                                            {% endif %}
+                                            <small class="form-text text-muted">{{ form.old_password.help_text }}</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text bg-transparent"><i class="ti-lock"></i></span>
+                                                <input type="password" name="new_password1" class="form-control ps-15 bg-transparent" placeholder="New Password" required>
+                                            </div>
+                                            {% if form.new_password1.errors %}
+                                                <div class="text-danger">
+                                                    {{ form.new_password1.errors }}
+                                                </div>
+                                            {% endif %}
+                                            <small class="form-text text-muted">{{ form.new_password1.help_text }}</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text bg-transparent"><i class="ti-lock"></i></span>
+                                                <input type="password" name="new_password2" class="form-control ps-15 bg-transparent" placeholder="Confirm New Password" required>
+                                            </div>
+                                            {% if form.new_password2.errors %}
+                                                <div class="text-danger">
+                                                    {{ form.new_password2.errors }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 text-center">
+                                                <button type="submit" class="btn btn-info margin-top-10">Change Password</button>
+                                            </div>
+                                        </div>
+                                    </form>				
+                                </div>
+                            </div>								
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock main_content %}

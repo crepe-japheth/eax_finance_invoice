@@ -1,0 +1,191 @@
+﻿{% extends "invoice/base.html" %}
+{% load static %}
+{% load custom_filters %}
+	{% block main_content %}
+	<script>
+		const chart_dates = {{ invoice_line_dashboard.chart_dates|safe }};
+		const chart_amounts = {{ invoice_line_dashboard.chart_amounts|safe }};
+		const week_labels = {{weekly_invoice_status_chart.week_labels|safe}};
+		const paid_amounts = {{weekly_invoice_status_chart.paid_amounts|safe}};
+		const pending_incomplete_amounts = {{weekly_invoice_status_chart.pending_incomplete_amounts|safe}}
+		const paid_percent = {{get_yearly_status_totals.paid.percentage|safe}}
+		const pending_percent = {{get_yearly_status_totals.pending.percentage|safe}}
+		const incomplete_percent = {{get_yearly_status_totals.incomplete.percentage|safe}}
+	</script>
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+			<div class="container-full">
+				<!-- Main content -->
+				<section class="content">			
+					<div class="row">
+						<div class="col-xl-4 col-12">
+							<div class="box box-body bg-primary">
+							<h4>
+								<span>Total Pending Invoice</span>
+								<span class="float-end"><a class="btn btn-xs btn-danger" href="{% url 'invoice' %}">View</a></span>
+							</h4>
+							<br>
+							<p class="fs-30">{{total_pending}}</p>
+							<div class="fs-16"><i class="glyphicon glyphicon-arrow-up text-warning me-1"></i>{{increase_today}} increase from today</div>
+							</div>
+						</div>
+						<div class="col-xl-4 col-12">
+							<div class="box box-body bg-info">
+							<h4>
+								<span>Total Paid invoice</span>
+								<span class="float-end"><a class="btn btn-xs btn-warning" href="{% url 'invoice' %}">View</a></span>
+							</h4>
+							<br>
+							<p class="fs-30">{{total_paid}}</p>
+							<div class="fs-16"><i class="glyphicon glyphicon-arrow-up text-danger me-1"></i> {{today_paid}} Paid today</div>
+							</div>
+						</div>				
+						<div class="col-xl-4 col-12">
+							<div class="box box-body bg-secondary">
+							<h4>
+								<span>Incomplete</span>
+								<span class="float-end"><a class="btn btn-xs btn-primary" href="{% url 'invoice' %}">View</a></span>
+							</h4>
+							<br>
+							<p class="fs-30">{{total_incomplete}}</p>
+							<div class="fs-16"><i class="glyphicon glyphicon-arrow-up text-white me-1"></i> {{today_incomplete}} more today </div>
+							</div>
+						</div>				
+						<div class="col-xl-7 col-12">
+							<div class="box">
+								<div class="box-header no-border">
+									<h4 class="box-title">
+										Total Growth
+									</h4>
+								</div>
+								<div class="box-body pt-0">
+									<div id="growth"></div>
+								</div>
+							</div>										
+						</div>
+						<div class="col-xl-5 col-12">
+							<div class="box">
+								<div class="box-header">
+									<h4 class="box-title">Paid VS pending by month</h4>
+								</div>
+								<div class="box-body">
+									<div id="userflow"></div>
+								</div>
+							</div>
+						</div>
+						<div class="col-xl-3 col-12">
+							<div class="box">
+								<div class="box-header">
+									<h4 class="box-title">Invoice Amount Stats of {{get_yearly_status_totals.year}}</h4>
+								</div>
+							<div class="box-body">
+								<div class="d-flex justify-content-between align-items-center">
+									<div>
+										<h3 class="my-0 text-dark">{{get_yearly_status_totals.total.amount|abbreviate_number}}</h3>
+										<p class="text-dark mb-0">Total Amount</p>
+									</div>
+									<div class="bg-info px-30 py-10 text-center rounded"><i class="ti-arrow-down text-white"></i></div>
+								</div>
+							</div>
+							</div>
+							<div class="box bg-warning">
+								<div class="box-body">
+									<div class="d-flex justify-content-between align-items-center">
+										<div>									
+											<h3 class="mb-0">{{get_yearly_status_totals.incomplete.amount|abbreviate_number}}</h3>
+											<p>Total Incomplete</p>
+										</div>
+										<div id="visitors-char"></div>
+									</div>
+								</div>
+							</div>
+							<div class="box">
+							<div class="box-body">
+								<div class="d-flex justify-content-between align-items-center">
+									<div>
+										<h1 class="my-0">{{get_yearly_status_totals.paid.amount|abbreviate_number}}</h1>
+										<p class="mb-0">Total Paid</p>
+									</div>
+									<div class="bg-success px-30 py-10 text-center rounded"><i class="ti-arrow-up text-white"></i></div>
+								</div>
+							</div>
+							<div class="progress progress-sm rounded-0 mt-5 mb-0">
+								<div class="progress-bar bg-success rounded-0" role="progressbar" style="width: 72%;" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
+							</div>
+							</div>					
+						</div>
+						
+						<div class="col-xl-3 col-lg-6 col-12">
+							<div class="box">
+								<div class="box-body">
+									<h4 class="box-title">% invoice Settlement of {{get_yearly_status_totals.year}}</h4>
+									<div id="earning-chart" class="min-h-250 py-25"></div>
+									<div>
+										<hr>
+										<p class="d-flex justify-content-between"><span>No of Invoice :</span>{{get_yearly_status_totals.total.count}}</p>
+										<p class="d-flex justify-content-between"><span>No of Pending:</span>{{get_yearly_status_totals.pending.count}}</p>
+										<p class="d-flex justify-content-between"><span>No of Incomplete:</span>{{get_yearly_status_totals.incomplete.count}}</p>
+										<p class="d-flex justify-content-between mb-0"><span>No of Paid:</span>{{get_yearly_status_totals.paid.count}}</p>
+									</div>
+								</div>
+							</div>										
+						</div>
+						<div class="col-xl-6">
+							<div class="box">
+								<div class="box-header">
+									<h4 class="box-title">Recent Transactions
+										<small class="subtitle">This the recent invoice Transaction</small>
+									</h4>						
+								</div>
+								<div class="box-body p-0">
+									<div class="table-responsive">
+										<table class="table no-border table-vertical-center">
+											<thead>
+												<tr>
+													<th class="p-0" style="width: 50px"></th>
+													<th class="p-0" style="min-width: 150px"></th>
+													<th class="p-0" style="min-width: 140px"></th>
+													<th class="p-0" style="min-width: 120px"></th>
+													<th class="p-0" style="min-width: 40px"></th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for tx in latest_transactions %}
+												<tr>
+									
+													<td>
+														<a href="#" class="text-dark fw-600 hover-primary fs-16">{{tx.customer_name}}</a>
+														<span class="text-fade d-block">{{tx.date_received}}</span>
+													</td>
+													<td class="text-end">
+														<span class="text-fade fw-600 d-block fs-16">
+															{{tx.invoice_number}}
+														</span>
+														<span class="text-dark fw-600 d-block fs-18">
+															RWF{{tx.amount|abbreviate_number}}
+														</span>
+													</td>
+													<td class="text-end">
+														<span class="fw-600 text-{% if tx.status == 'Paid'%}success{% elif tx.status == 'Pending' %}primary{% else %}danger{% endif %}">
+															{{tx.status}}
+														</span>
+													</td>
+													<td class="text-end">
+														<a href="{% url 'invoice_detail' tx.pk %}" class="btn btn-info-light btn-sm"><span class="icon-Arrow-right fs-18"><span class="path1"></span><span class="path2"></span></span></a>
+													</td>
+												</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!-- /.content -->
+			</div>
+		</div>
+		<!-- /.content-wrapper -->
+  	{% endblock main_content %}
+ 

@@ -1,0 +1,96 @@
+{% extends "invoice/base.html" %}
+{% load static %}
+{% block main_content %}
+     <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <div class="container-full">
+      <!-- Content Header (Page header) -->	  
+      <div class="content-header">
+          <div class="d-flex align-items-center">
+              <div class="me-auto">
+                  <h4 class="page-title">Invoice</h4>
+                  <div class="d-inline-block align-items-center">
+                      <nav>
+                          <ol class="breadcrumb">
+                              <li class="breadcrumb-item"><a href="#"><i class="mdi mdi-home-outline"></i></a></li>
+                              <li class="breadcrumb-item" aria-current="page">Invoice</li>
+                              <li class="breadcrumb-item active" aria-current="page">Invoice Details</li>
+                          </ol>
+                      </nav>
+                  </div>
+              </div>
+              
+          </div>
+      </div>  
+
+      <!-- Main content -->
+      <section class="invoice printableArea">
+        <div class="row">
+          
+          <div class="col-12">
+            <div class="page-header">
+              <h2 class="d-inline"><span class="fs-30">Invoice Details</span></h2>
+              <div class="pull-right text-end">
+                  <h3>{{invoice.created_at}}</h3>
+              </div>	
+            </div>
+          </div>
+          <!-- /.col -->
+        </div>
+        <div class="row invoice-info">
+          <div class="col-md-6 invoice-col">
+            <strong>From</strong>	
+            <address>
+              <strong class="text-blue fs-24">{{invoice.customer_name}}</strong><br>
+              <strong class="d-inline">Invoice No: {{invoice.invoice_number}}</strong><br> 
+            </address>
+          </div>
+          <div class="col-sm-12 invoice-col mb-15">
+              <div class="invoice-details row no-margin">
+                <div class="col-md-6 col-lg-3"><b>Date Received: </b>{{invoice.date_received}}</div>
+                <div class="col-md-6 col-lg-3"><b>Payment Due: </b>{{invoice.payment_due_date}}</div>
+                <div class="col-md-6 col-lg-3"><b>Amount(RWF):</b>{{invoice.amount}}</div>
+                <div class="col-md-6 col-lg-3"><b>Status: </b>{{invoice.status}}</div>
+              </div>
+          </div>
+        <!-- /.col -->
+        </div>
+        <div class="row">
+          <div class="col-12 table-responsive">
+            <table class="table table-bordered">
+              <tbody>
+              <tr>
+                <th>#File</th>
+                <th>File Attachment</th>
+                <th>File Description</th>
+                <th>View</th>
+              </tr>
+              {% if invoice.files.all %}
+                {% for file in invoice.files.all %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td><a href="{{ file.file.url }}" target="_blank">{{ file.file.name|default:"Download File" }}</a></td>
+                    <td>{{file.description}}</td>
+                    <td class="text-end"><a class="btn btn-primary"  href="{{ file.file.url }}" target="_blank">View</a></td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <p>No files uploaded for this invoice.</p>
+            {% endif %}
+              </tbody>
+            </table>
+          </div>
+          <!-- /.col -->
+        </div>
+        <div class="row no-print">
+          <div class="col-12">
+            <a href="{% url 'invoice_status_update' invoice.pk %}" type="button" class="btn btn-success pull-right"><i class="glyphicon glyphicon-edit"></i> Change Status
+            </a>
+          </div>
+        </div>
+      </section>
+      <!-- /.content -->
+    </div>
+</div>
+<!-- /.content-wrapper -->
+{% endblock main_content%}

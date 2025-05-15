@@ -1,0 +1,75 @@
+{% extends "invoice/base.html" %}
+{% load static %}
+{% block main_content %}
+    <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <div class="container-full">
+      <!-- Content Header (Page header) -->	  
+      <div class="content-header">
+          <div class="d-flex align-items-center">
+              <div class="me-auto">
+                  <h4 class="page-title">User list</h4>
+                  <div class="d-inline-block align-items-center">
+                      <nav>
+                          <ol class="breadcrumb">
+                              <li class="breadcrumb-item"><a href="#"><i class="mdi mdi-home-outline"></i></a></li>
+                              <li class="breadcrumb-item" aria-current="page">Contact</li>
+                              <li class="breadcrumb-item active" aria-current="page">User list</li>
+                          </ol>
+                      </nav>
+                  </div>
+              </div>
+              
+          </div>
+      </div>  
+
+      <!-- Main content -->
+      <section class="content">
+          <div class="row">
+              <div class="col-lg-9 col-md-8">
+                  <div class="box">
+                    <div class="media-list media-list-divided media-list-hover">
+                      {% for user in users %}
+                      <div class="media align-items-center">
+                        <span class="badge badge-dot badge-danger"></span>
+                        {% if user.profile_pic %}
+                        <a class="avatar avatar-lg status-success" href="#">
+                          <img src="{{user.profile_pic.url}}" alt="...">
+                        </a>  
+                        {% else %}
+                        <a class="avatar avatar-lg status-success" href="#">
+                          <img src="{% static 'images/avatar/avatar-15.png' %}" alt="...">
+                        </a>
+                        {% endif %}
+
+                        <div class="media-body">
+                          <p>
+                            <a href="#"><strong>{{user.username}}</strong></a>
+                            <small class="sidetitle">{{user.email}}</small>
+                          </p>
+                          <p>{{user.user_role}}</p>
+                        </div>
+
+                        <div class="media-right gap-items">
+                          <a class="media-action lead text-muted" href="{% url 'user-update' user.pk %}" data-bs-toggle="tooltip" title="Update"><i class="glyphicon glyphicon-pencil"></i></a>
+                          <a class="media-action lead text-danger" href="{% url 'user-delete' user.pk %}" data-bs-toggle="tooltip" title="Delete"><i class="glyphicon glyphicon-remove-sign"></i></a>
+                        </div>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+              </div>
+              <div class="col-lg-3 col-md-4">
+                  <div class="box no-shadow">
+                      <div class="box-body">
+                        <a href="{% url 'create_user' %}" class="btn btn-success mt-10 d-block text-center">+ Add New User</a>
+                    </div>
+                  </div>
+              </div>				
+          </div>
+      </section>
+      <!-- /.content -->
+    </div>	  
+</div>
+<!-- /.content-wrapper -->
+{% endblock main_content %}

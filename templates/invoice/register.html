@@ -1,0 +1,128 @@
+{% extends "invoice/base.html" %}
+{% load static %}
+
+{% block main_content %}
+<div class="content-wrapper">
+    <div class="container-full">
+
+    <!-- Content Header (Page header) -->
+		<div class="content-header">
+			<div class="d-flex align-items-center">
+				<div class="me-auto">
+					<h4 class="page-title">User creation form</h4>
+					<div class="d-inline-block align-items-center">
+						<nav>
+							<ol class="breadcrumb">
+								<li class="breadcrumb-item"><a href="#"><i class="mdi mdi-home-outline"></i></a></li>
+								<li class="breadcrumb-item" aria-current="page">User</li>
+								<li class="breadcrumb-item active" aria-current="page">New User</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+				
+			</div>
+		</div>	  
+
+		<!-- Main content -->
+		<section class="content">
+			<div class="row">
+
+                <div class="col-12">
+                    <div class="row justify-content-center g-0">
+                        <div class="col-lg-5 col-md-5 col-12">
+                            <div class="bg-white rounded10 shadow-lg">
+                                <div class="content-top-agile p-20 pb-0">
+                                    <h2 class="text-primary">Register New User</h2>
+                                    {% if messages %}
+                                        {% for message in messages %}
+                                            <div class="alert alert-{{ message.tags }}" role="alert">
+                                                {{ message }}
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <div class="p-40">
+                                    <form action="{% url 'create_user' %}" method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text bg-transparent"><i class="ti-email"></i></span>
+                                                {{form.email}}
+                                                {{form.email.errors}}
+                                                {% comment %} <input type="email" name="email" class="form-control ps-15 bg-transparent" placeholder="Email" required> {% endcomment %}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text bg-transparent"><i class="ti-user"></i></span>
+                                                {{form.username}}
+                                                {{form.username.errors}}
+                                                {% comment %} <input type="text" name="username" class="form-control ps-15 bg-transparent" placeholder="Username" required> {% endcomment %}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text bg-transparent"><i class="ti-lock"></i></span>
+                                                {{form.password1}}
+                                                {{form.password1.errors}}
+                                                {% comment %} <input type="password" name="password" class="form-control ps-15 bg-transparent" placeholder="Temporary Password" required> {% endcomment %}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text bg-transparent"><i class="ti-lock"></i></span>
+                                                {{form.password2}}
+                                                {{form.password2.errors}}
+                                                {% comment %} <input type="password" name="password" class="form-control ps-15 bg-transparent" placeholder="Temporary Password" required> {% endcomment %}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text bg-transparent"><i class="ti-id-badge"></i></span>
+                                                {{form.user_role}}
+                                                {{form.user_role.errors}}
+                                                {% comment %} <select name="user_role" class="form-select ps-15 bg-transparent" required>
+                                                    <option value="" selected disabled>Select User Role</option>
+                                                    <option value="finance_manager">Finance Manager</option>
+                                                    <option value="invoice_manager">Invoice Manager</option>
+                                                    <option value="superuser">Super User</option>
+                                                </select> {% endcomment %}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="profile_pic" class="form-label">Profile Picture</label>
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text bg-transparent"><i class="ti-image"></i></span>
+                                                {{form.profile_pic}}
+                                                {{form.profile_pic.errors}}
+                                                {% comment %} <input type="file" name="profile_pic" id="profile_pic" class="form-control ps-15 bg-transparent" accept="image/*"> {% endcomment %}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="checkbox">
+                                                {{form.force_password_change}}
+                                                {{form.force_password_change.errors}}
+                                                {% comment %} <input type="checkbox" name="force_password_change" id="force_password_change" checked>
+                                                <label for="force_password_change">Force password change on first login</label> {% endcomment %}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <!-- /.col -->
+                                            <div class="col-12 text-center">
+                                                <button type="submit" class="btn btn-info margin-top-10">Create User</button>
+                                            </div>
+                                            <!-- /.col -->
+                                        </div>
+                                    </form>				
+                                </div>
+                            </div>								
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+{% endblock main_content %}

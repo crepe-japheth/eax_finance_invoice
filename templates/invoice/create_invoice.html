@@ -1,0 +1,303 @@
+{% extends "invoice/base.html" %}
+{% load static %}
+
+{% block main_content %}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <div class="container-full">
+
+    <!-- Content Header (Page header) -->
+		<div class="content-header">
+			<div class="d-flex align-items-center">
+				<div class="me-auto">
+					<h4 class="page-title">General Form Elements</h4>
+					<div class="d-inline-block align-items-center">
+						<nav>
+							<ol class="breadcrumb">
+								<li class="breadcrumb-item"><a href="#"><i class="mdi mdi-home-outline"></i></a></li>
+								<li class="breadcrumb-item" aria-current="page">Forms</li>
+								<li class="breadcrumb-item active" aria-current="page">General Form Elements</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+				
+			</div>
+		</div>	  
+
+		<!-- Main content -->
+		<section class="content">
+			<div class="row">			  
+				<div class="col-lg-12 col-12">
+					<div class="box">
+						<div class="box-header with-border">
+						  <h4 class="box-title">Create New Invoice</h4>
+						</div>
+						{% if invoice_form.errors %}
+							<div class="badge badge-pill badge-danger">
+								<ul>
+									{% for field in invoice_form %}
+										{% for error in field.errors %}
+											<li>{{ error }}</li>
+										{% endfor %}
+									{% endfor %}
+								</ul>
+							</div>
+						{% endif %}
+
+
+						<form method="post" enctype="multipart/form-data" class="form">
+							{% csrf_token %}
+							<div class="box-body">
+							  <h4 class="box-title text-info mb-0"><i class="ti-user me-15"></i> Invoice Info</h4>
+							  <hr class="my-15">
+						  
+							  <div class="row">
+								<div class="col-md-6">
+								  <div class="form-group">
+									<label>Invoice Number</label>
+									{{ invoice_form.invoice_number }}
+								  </div>
+								</div>
+								<div class="col-md-6">
+								  <div class="form-group">
+									<label>Customer Name</label>
+									{{ invoice_form.customer_name }}
+								  </div>
+								</div>
+							  </div>
+						  
+							  <div class="row">
+								<div class="col-md-6">
+								  <div class="form-group">
+									<label>Date Received</label>
+									{{ invoice_form.date_received }}
+								  </div>
+								</div>
+								<div class="col-md-6">
+								  <div class="form-group">
+									<label>Payment Due Date</label>
+									{{ invoice_form.payment_due_date }}
+								  </div>
+								</div>
+							  </div>
+						  
+							  <div class="form-group">
+								<label>Amount</label>
+								{{ invoice_form.amount }}
+							  </div>
+						  
+							  <h4 class="box-title text-info mb-0 mt-20"><i class="ti-save me-15"></i> Required Files</h4>
+							  <hr class="my-15">
+						  
+							  {{ file_formset.management_form }}
+						  
+							  <div id="file-formset">
+								{% for form in file_formset %}
+								  <div class="file-form border rounded p-3 mb-3 position-relative">
+									{{ form.id }}
+									<div class="row">
+									  <div class="col-md-8">
+										<div class="form-group">
+										  <label>File</label>
+										  {{ form.file }}
+										</div>
+									  </div>
+									  <div class="col-md-4">
+										<div class="form-group">
+										  <label>Description</label>
+										  {{ form.description }}
+										</div>
+									  </div>
+									</div>
+									{% if form.DELETE %}
+									  <div class="form-group">
+										<label>Delete</label>
+										{{ form.DELETE }}
+									  </div>
+									{% endif %}
+								  </div>
+								{% endfor %}
+							  </div>
+						  
+							  <!-- Hidden empty form template -->
+							  <div id="empty-form-template" class="file-form d-none">
+								{{ file_formset.empty_form.id }}
+								<div class="row">
+								  <div class="col-md-8">
+									<div class="form-group">
+									  <label>File</label>
+									  {{ file_formset.empty_form.file }}
+									</div>
+								  </div>
+								  <div class="col-md-4">
+									<div class="form-group">
+									  <label>Description</label>
+									  {{ file_formset.empty_form.description }}
+									</div>
+								  </div>
+								</div>
+							  </div>
+						  
+							</div>
+						  
+							<div class="box-footer">
+							  <button type="button" id="add-file" class="btn btn-secondary mt-2">
+								<i class="ti-plus"></i> Add More File
+							  </button>
+							  <button type="reset" class="btn btn-warning me-1">
+								<i class="ti-trash"></i> Cancel
+							  </button>
+							  <button type="submit" class="btn btn-primary">
+								<i class="ti-save-alt"></i> Save
+							  </button>
+							</div>
+						  </form>
+						  
+					</div>
+					  <!-- /.box -->			
+				</div> 
+            </div>
+        </section>
+    </div>
+</div>
+{% comment %} <script>
+	document.addEventListener("DOMContentLoaded", function () {
+	  const addButton = document.getElementById('add-file');
+	  const formsetDiv = document.getElementById('file-formset');
+	  const totalFormsInput = document.getElementById('id_form-TOTAL_FORMS');
+  
+	  addButton.addEventListener('click', function () {
+		const totalForms = parseInt(totalFormsInput.value);
+		const firstForm = formsetDiv.querySelector('.file-form');
+		const newForm = firstForm.cloneNode(true);
+  
+		// 🧹 Clean the clone: remove old remove buttons
+		const oldRemoveBtn = newForm.querySelector('button');
+		if (oldRemoveBtn) {
+		  oldRemoveBtn.remove();
+		}
+  
+		// Clear inputs and update names/IDs
+		newForm.querySelectorAll('input').forEach(input => {
+		  const name = input.name.replace(/form-\d+-/, `form-${totalForms}-`);
+		  const id = input.id.replace(/form-\d+-/, `form-${totalForms}-`);
+		  input.name = name;
+		  input.id = id;
+		  input.value = '';
+		});
+  
+		// Add fresh remove button
+		const removeBtn = createRemoveButton(newForm);
+		newForm.appendChild(removeBtn);
+  
+		formsetDiv.appendChild(newForm);
+		updateTotalForms();
+	  });
+  
+	  // Adds remove button to existing forms
+	  formsetDiv.querySelectorAll('.file-form').forEach(form => {
+		const removeBtn = createRemoveButton(form);
+		form.appendChild(removeBtn);
+	  });
+  
+	  function createRemoveButton(form) {
+		const btn = document.createElement('button');
+		btn.type = 'button';
+		btn.className = 'btn btn-danger mt-2';
+		btn.innerText = 'Remove';
+		btn.addEventListener('click', () => {
+		  if (formsetDiv.querySelectorAll('.file-form').length > 1) {
+			form.remove();
+			updateTotalForms();
+		  } else {
+			alert("At least one file input must remain!");
+		  }
+		});
+		return btn;
+	  }
+  
+	  function updateTotalForms() {
+		const total = formsetDiv.querySelectorAll('.file-form').length;
+		totalFormsInput.value = total;
+	  }
+	});
+</script> {% endcomment %}
+
+
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+	  const formsetPrefix = "files";
+	  const addButton = document.getElementById("add-file");
+	  const formsetDiv = document.getElementById("file-formset");
+	  const totalFormsInput = document.getElementById(`id_${formsetPrefix}-TOTAL_FORMS`);
+	  const emptyFormTemplate = document.getElementById("empty-form-template");
+  
+		  // Add remove button to existing forms
+		  document.querySelectorAll(".file-form").forEach((form, index) => {
+			const isTemplate = form.style.display === "none"; // Skip template
+			const hasRemoveBtn = form.querySelector(".btn-danger");
+		
+			if (!isTemplate && !hasRemoveBtn) {
+			  const removeBtn = createRemoveButton(form);
+			  form.appendChild(removeBtn);
+			}
+		  });
+  
+	
+	  addButton.addEventListener("click", function () {
+		const totalForms = parseInt(totalFormsInput.value);
+		const newForm = emptyFormTemplate.cloneNode(true);
+	
+		newForm.classList.remove("d-none");
+		newForm.removeAttribute("id");
+	
+		// Update form field names and IDs
+		newForm.querySelectorAll("[name], [id]").forEach((el) => {
+		  if (el.name) {
+			el.name = el.name.replace("__prefix__", totalForms);
+		  }
+		  if (el.id) {
+			el.id = el.id.replace("__prefix__", totalForms);
+		  }
+		});
+	
+		// Clear input values
+		newForm.querySelectorAll("input").forEach((input) => {
+		  if (input.type !== "hidden") {
+			input.value = "";
+		  }
+		});
+	
+		// Add remove button
+		const removeBtn = createRemoveButton(newForm);
+		newForm.appendChild(removeBtn);
+	
+		formsetDiv.appendChild(newForm);
+		totalFormsInput.value = totalForms + 1;
+	  });
+	
+	  function createRemoveButton(form) {
+		const btn = document.createElement("button");
+		btn.type = "button";
+		btn.className = "btn btn-danger mt-2";
+		btn.innerText = "Remove";
+		btn.addEventListener("click", () => {
+		  const forms = formsetDiv.querySelectorAll(".file-form");
+		  if (forms.length > 1) {
+			form.remove();
+			totalFormsInput.value = formsetDiv.querySelectorAll(".file-form").length;
+		  } else {
+			alert("At least one file input must remain.");
+		  }
+		});
+		return btn;
+	  }
+	});
+  </script>
+  
+  
+  
+{% endblock main_content %}
+

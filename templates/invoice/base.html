@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{% static 'images/EAX logo.png' %}">
+
+    <title>EAX Invoice - Dashboard</title>
+    
+	<!-- Vendors Style-->
+	<link rel="stylesheet" href="{% static 'css/vendors_css.css' %}">
+	  
+	<!-- Style-->  
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<link rel="stylesheet" href="{% static 'css/skin_color.css' %}">
+     
+  </head>
+
+<body class="hold-transition light-skin sidebar-mini theme-primary fixed">
+	
+<div class="wrapper">
+	{% comment %} <div id="loader"></div> {% endcomment %}
+	
+  {% include "invoice/includes/header.html" %}
+  
+  {% include "invoice/includes/sidebar.html" %}
+
+    {% block main_content %}
+    
+    {% endblock main_content %}
+
+  {% include "invoice/includes/footer.html" %}
+
+  
+</div>
+<!-- ./wrapper -->
+	
+
+	
+	<!-- Page Content overlay -->
+	
+	
+	<!-- Vendor JS -->
+	<script src="{% static 'js/vendors.min.js' %}"></script>
+    <script src="{% static 'assets/icons/feather-icons/feather.min.js' %}"></script>
+	
+	<script src="{% static 'assets/vendor_components/apexcharts-bundle/irregular-data-series.js' %}"></script>
+	<script src="{% static 'assets/vendor_components/apexcharts-bundle/dist/apexcharts.js' %}"></script>
+	
+	
+	<!-- Master Admin App -->
+	<script src="{% static 'js/template.js' %}"></script>
+	<script src="{% static 'js/pages/dashboard.js' %}"></script>
+	
+</body>
+
+</html>

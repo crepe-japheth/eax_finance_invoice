@@ -1,0 +1,117 @@
+{% extends "invoice/base.html" %}
+{% block main_content %}
+    <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <div class="container-full">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+          <div class="d-flex align-items-center">
+              <div class="me-auto">
+                  <h4 class="page-title">All Invoices</h4>
+                  <div class="d-inline-block align-items-center">
+                      <nav>
+                          <ol class="breadcrumb">
+                              <li class="breadcrumb-item"><a href="#"><i class="mdi mdi-home-outline"></i></a></li>
+                              <li class="breadcrumb-item" aria-current="page">Invoice</li>
+                              <li class="breadcrumb-item active" aria-current="page">All Invoices</li>
+                          </ol>
+                      </nav>
+                  </div>
+              </div>
+              
+          </div>
+      </div>
+
+      <!-- Main content -->
+      <section class="content">
+
+        <div class="row">
+          <div class="col-lg-3 col-md-4">
+              <div class="box no-shadow">
+                  <div class="box-body">
+                    <a href="{% url 'create_invoice' %}" class="btn btn-success mt-10 d-block text-center">+ Add New</a>
+                </div>
+              </div>
+          </div>				
+        </div>
+
+        <div class="row">
+
+          <div class="col-12">
+            <div class="box">
+              <div class="box-header with-border">
+                <h4 class="box-title">Finance Invoices</h4>
+                <div class="box-controls pull-right">
+                  <div class="lookup lookup-circle lookup-right">
+                    <input type="text" name="s">
+                  </div>
+                </div>
+              </div>
+              <!-- /.box-header -->
+              <div class="box-body no-padding">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <tr>
+                        <th>Invoice</th>
+                        <th>Customer</th>
+                        <th>Date Received</th>
+                        <th>Date Due</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                      {% for invoice in invoices %}
+                      <tr>
+                        <td>
+                          <a href="javascript:void(0)">{{invoice.invoice_number}}</a>
+                        </td>
+                        <td>{{invoice.customer_name}}</td>
+                        <td>
+                          <span class="text-muted"><i class="glyphicon glyphicon-calendar"></i> {{invoice.date_received}}</span> 
+                        </td>
+                        <td>
+                          <span class="text-muted"><i class="glyphicon glyphicon-calendar"></i> {{invoice.payment_due_date}}</span> 
+                          {% if invoice.is_overdue %}
+                              <span class="badge badge-pill badge-danger" >Overdue</span>
+                          {% elif invoice.is_approaching_due_date %}
+                              <span class="badge badge-pill badge-warning">Due Soon</span>
+                          {% else %}
+                              <span class="badge badge-pill badge-success">On Track</span>
+                          {% endif %}
+                        </td>
+                        <td>Rwf {{invoice.amount}}</td>
+                        <td>
+                          <span class="badge badge-pill {% if invoice.status == 'Paid' %}badge-success
+                          {% elif invoice.status == 'Pending' %}badge-warning
+                          {% elif invoice.status == 'Incomplete' %}badge-danger
+                          {% else %}badge-secondary{% endif %}">{{invoice.status}}</span>
+                        </td>
+                        <td>
+                          <div class="btn-group">
+                            <button class="btn btn-rounded btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">Manage</button>
+                            <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" href="{% url 'invoice_detail' invoice.pk %}">View</a>
+                            <a class="dropdown-item" href="{% url 'edit_invoice' invoice.pk %}">Update</a>
+                            <a class="dropdown-item" href="{% url 'invoice-delete' invoice.pk %}">Delete</a>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </table>
+                  </div>
+              </div>
+              <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+          </div>
+
+        </div>
+        <!-- /.row -->
+
+      </section>
+      <!-- /.content -->
+    </div>
+</div>
+<!-- /.content-wrapper -->
+{% endblock main_content %}

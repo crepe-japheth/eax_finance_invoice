@@ -1,0 +1,50 @@
+{% load static %}
+<aside class="main-sidebar">
+    <!-- sidebar-->
+    <section class="sidebar position-relative">	
+		<div class="user-profile px-40 py-15">
+			<div class="d-flex align-items-center">			
+				<div class="image">
+					{% if request.user.profile_pic %}
+						<img src="{{request.user.profile_pic.url}}" class="avatar avatar-lg" alt="User Image">
+					{% else %}
+						<img src="{% static 'images/avatar/avatar-15.png' %}" class="avatar avatar-lg" alt="User Image">
+					{% endif %}
+				</div>
+				<div class="info ms-10">
+					<p class="mb-0">Welcome</p>
+					<h5 class="mb-0">{{request.user.username}}</h5>
+				</div>
+			</div>
+        </div>
+	  	<div class="multinav">
+		  <div class="multinav-scroll" style="height: 100%;">	
+			  <!-- sidebar menu-->
+			  <ul class="sidebar-menu" data-widget="tree">
+				<li class="header">Menu </li>
+				<li>
+				  <a href="{% url 'dashboard' %}">
+					<img src="https://master-admin-template.multipurposethemes.com/bs5/images/svg-icon/dashboard.svg" class="svg-icon" alt="">
+					<span>Dashboard</span>
+				  </a>
+				</li>
+					     
+				<li>
+				  <a href="{% url 'invoice' %}">
+					<img src="https://master-admin-template.multipurposethemes.com/bs5/images/svg-icon/tables.svg" class="svg-icon" alt="">
+					<span>Invoice</span>
+				  </a>
+				</li>
+					     
+				<li>
+				  <a href="{% url 'user' %}">
+					<img src="https://master-admin-template.multipurposethemes.com/bs5/images/svg-icon/authentication.svg" class="svg-icon" alt="">
+					<span>Users</span>
+				  </a>
+				</li>
+					     
+			  </ul>
+		  </div>
+		</div>
+    </section>
+  </aside>
