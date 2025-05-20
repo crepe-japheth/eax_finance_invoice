@@ -13,7 +13,7 @@ DEBUG = config("DEBUG", cast=bool)
 
 ALLOWED_HOSTS = ['localhost', '.ngrok-free.app', '.ea-africaexchange.com']
 CSRF_TRUSTED_ORIGINS = [
-    'http://trading.ea-africaexchange.com',
+    'https://invoice.ea-africaexchange.com',
     'https://*.ngrok-free.app',
     'http://localhost',
 ]
