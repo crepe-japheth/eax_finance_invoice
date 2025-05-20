@@ -9,7 +9,6 @@ from .forms import InvoiceForm, InvoiceFileFormSet, InvoiceStatusUpdateForm, Use
 from .models import InvoiceFile, User, Invoice, InvoiceStatusHistory
 from django.shortcuts import get_object_or_404
 from invoice.utils.dashboard_chart import invoice_line_dashboard, get_yearly_status_totals, weekly_invoice_status_chart
-
 from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
@@ -48,8 +47,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         return context
 
 
-
-
 class CreateInvoiceView(View):
     def get(self, request):
         invoice_form = InvoiceForm()
@@ -81,7 +78,8 @@ class CreateInvoiceView(View):
             'invoice_form': invoice_form,
             'file_formset': file_formset,
         })
-    
+
+
 class EditInvoiceView(View):
     def get(self, request, pk):
         invoice = get_object_or_404(Invoice, pk=pk)
@@ -114,11 +112,6 @@ class InvoiceView(ListView):
     model = Invoice
     template_name = 'invoice/invoice.html'
     context_object_name = "invoices"
-
-
-
-# class RegisterView(TemplateView):
-#     template_name = 'invoice/register.html'
 
 
 class InvoiceDetailView(DetailView):
@@ -175,6 +168,7 @@ def first_login_password_change(request):
     
     return render(request, 'invoice/first_login.html', {'form': form})
 
+
 @login_required
 def user_login_router(request):
     """Route users after login based on whether they need to change password"""
@@ -189,18 +183,17 @@ def user_login_router(request):
         else:  # invoice_manager
             return redirect('index')
 
+
 class UserView(LoginRequiredMixin, ListView):
     model = User
     context_object_name = "users"
     template_name = "invoice/users.html"
 
 
-
-
-
 # class IsFinanceManagerMixin(UserPassesTestMixin):
 #     def test_func(self):
 #         return self.request.user.user_role == 'finance_manager'
+
 
 class InvoiceStatusUpdateView(LoginRequiredMixin, UpdateView):
     model = Invoice
@@ -248,6 +241,7 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
     form_class = UserUpdateForm
     template_name = 'invoice/user_update.html'
     success_url = reverse_lazy('user')  # Redirect to user list after update
+
     
 class UserDeleteView(LoginRequiredMixin, DeleteView):
     model = User

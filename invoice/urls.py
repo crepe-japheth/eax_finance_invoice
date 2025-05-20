@@ -10,15 +10,12 @@ urlpatterns = [
     path('invoice/', InvoiceView.as_view(), name='invoice'), 
     path('user', UserView.as_view(), name='user'), 
     path('invoice/create', CreateInvoiceView.as_view(), name='create_invoice'), 
-    # path('user/register', RegisterView.as_view(), name='register_user'),
     path('invoice/<int:pk>/detail', InvoiceDetailView.as_view(), name='invoice_detail'),
     path('invoice/<int:pk>/edit/', EditInvoiceView.as_view(), name='edit_invoice'),
     path('invoice/<int:pk>/status-update/', InvoiceStatusUpdateView.as_view(), name='invoice_status_update'),
     path('invoices/<int:pk>/delete/', views.InvoiceDeleteView.as_view(), name='invoice-delete'),
     path('users/<int:pk>/update/', views.UserUpdateView.as_view(), name='user-update'),
     path('users/<int:pk>/delete/', views.UserDeleteView.as_view(), name='user-delete'),
-
-    # User creation - only accessible by superusers
     path('users/create/', views.create_user_view, name='create_user'),
     
     # Login related URLs

@@ -1,21 +1,22 @@
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3w*wdfub0y4m$m%1v095e20w7#^gyvzon32g41-#u^m5l0x9n0'
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", cast=bool)
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['localhost', '.ngrok-free.app', '.ea-africaexchange.com']
+CSRF_TRUSTED_ORIGINS = [
+    'http://trading.ea-africaexchange.com',
+    'https://*.ngrok-free.app',
+    'http://localhost',
+]
 
 # Application definition
 
@@ -64,9 +65,13 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME":config("DB_NAME"),
+        "USER":config("DB_USER"), 
+        "PASSWORD":config("DB_PASSWORD"), 
+        "HOST":config("DB_HOST"), 
+        "PORT":config("DB_PORT") 
     }
 }
 
@@ -130,7 +135,7 @@ AUTH_USER_MODEL = 'invoice.User'
 
 # Login settings
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'login_router'  # The view that will handle redirection based on user status
+LOGIN_REDIRECT_URL = 'login_router'
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
