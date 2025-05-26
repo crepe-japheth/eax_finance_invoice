@@ -62,7 +62,7 @@ class CreateInvoiceView(View):
 
         if invoice_form.is_valid() and file_formset.is_valid():
             invoice = invoice_form.save(commit=False)
-            user = User.objects.get(id=1)
+            user = request.user
             invoice.created_by = user #request.user
             invoice.save()
 

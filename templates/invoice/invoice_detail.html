@@ -50,7 +50,11 @@
                 <div class="col-md-6 col-lg-3"><b>Date Received: </b>{{invoice.date_received}}</div>
                 <div class="col-md-6 col-lg-3"><b>Payment Due: </b>{{invoice.payment_due_date}}</div>
                 <div class="col-md-6 col-lg-3"><b>Amount(RWF):</b>{{invoice.amount}}</div>
-                <div class="col-md-6 col-lg-3"><b>Status: </b>{{invoice.status}}</div>
+                <div class="col-md-6 col-lg-3">
+                          <b>Status: </b> <span class="badge badge-pill {% if invoice.status == 'Paid' %}badge-success {% elif invoice.status == 'Pending' %}badge-warning
+                          {% elif invoice.status == 'Incomplete' %}badge-danger
+                          {% else %}badge-secondary{% endif %}">{{invoice.status}}</span> 
+                </div>
               </div>
           </div>
         <!-- /.col -->
@@ -84,7 +88,12 @@
         </div>
         <div class="row no-print">
           <div class="col-12">
-            <a href="{% url 'invoice_status_update' invoice.pk %}" type="button" class="btn btn-success pull-right"><i class="glyphicon glyphicon-edit"></i> Change Status
+            {% if request.user.user_role == 'invoice_manager' %}
+            {% elif request.user.user_role == 'finance_manager' and invoice.status != 'Paid' %}
+              <a href="{% url 'invoice_status_update' invoice.pk %}" type="button" class="btn btn-success pull-right"><i class="glyphicon glyphicon-edit"></i> Change Status
+            {% else %}
+                <a href="{% url 'invoice_status_update' invoice.pk %}" type="button" class="btn btn-success pull-right"><i class="glyphicon glyphicon-edit"></i> Change Status
+            {% endif %}
             </a>
           </div>
         </div>
