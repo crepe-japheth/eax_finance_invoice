@@ -43,14 +43,14 @@
                 <h4 class="box-title">Finance Invoices</h4>
                 <div class="box-controls pull-right">
                   <div class="lookup lookup-circle lookup-right">
-                    <input type="text" name="s">
+                    <input type="text" name="s" placeholder="Search Invoice" id="invoiceSearch">
                   </div>
                 </div>
               </div>
               <!-- /.box-header -->
               <div class="box-body no-padding">
                   <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="invoiceSearch">
                       <tr>
                         <th>Invoice</th>
                         <th>Customer</th>
@@ -113,5 +113,27 @@
       <!-- /.content -->
     </div>
 </div>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("invoiceSearch");
+    const rows = document.querySelectorAll("#invoiceTable tbody tr");
+
+    searchInput.addEventListener("keyup", function() {
+      const input = this.value.toLowerCase();
+
+      rows.forEach(function(row) {
+        const rowText = row.textContent.toLowerCase();
+        console.log(rowText); // For debugging
+        if (rowText.includes(input)) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    });
+  });
+</script>
+
+
 <!-- /.content-wrapper -->
 {% endblock main_content %}

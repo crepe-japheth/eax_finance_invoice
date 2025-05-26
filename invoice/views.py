@@ -15,6 +15,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from .forms import UserCreationForm, FirstLoginPasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
 # views.py
 
 User = get_user_model()
@@ -23,7 +24,6 @@ User = get_user_model()
 
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'invoice/index.html'
-    # login_url = 'login/'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -71,6 +71,7 @@ class CreateInvoiceView(View):
                     file_instance = file_form.save(commit=False)
                     file_instance.invoice = invoice
                     file_instance.save()
+                    messages.success(self.request, "Your Invoice was created successfully!")
 
             return redirect('invoice')  # Or wherever you want
 
@@ -99,6 +100,7 @@ class EditInvoiceView(View):
             print(invoice_form.errors)
             invoice = invoice_form.save()
             file_formset.save()
+            messages.success(self.request, "Invoice was Edit successfully!")
             return redirect('invoice_detail', pk=invoice.pk)
 
         return render(request, 'invoice/edit_invoice.html', {
@@ -162,7 +164,7 @@ def first_login_password_change(request):
             user.save()
             
             messages.success(request, 'Your password was successfully updated!')
-            return redirect('index')
+            return redirect('dashboard')
     else:
         form = FirstLoginPasswordChangeForm(request.user)
     
@@ -177,11 +179,11 @@ def user_login_router(request):
     else:
         # Direct to appropriate dashboard based on user role
         if request.user.is_superuser:
-            return redirect('index')
+            return redirect('dashboard')
         elif request.user.user_role == 'finance_manager':
-            return redirect('index')
+            return redirect('dashboard')
         else:  # invoice_manager
-            return redirect('index')
+            return redirect('dashboard')
 
 
 class UserView(LoginRequiredMixin, ListView):
@@ -224,6 +226,7 @@ class InvoiceStatusUpdateView(LoginRequiredMixin, UpdateView):
                 comment=comment if new_status == 'Incomplete' else '',
                 changed_by=self.request.user
             )
+            messages.success(self.request, "Your invoice status was updated successfully!")
         return response
 
     def get_success_url(self):

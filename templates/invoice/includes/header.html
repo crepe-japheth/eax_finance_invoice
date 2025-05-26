@@ -49,4 +49,9 @@
         </ul>
       </div>
     </nav>
+	{% if messages %}
+		{% for message in messages %}
+			<div class="myadmin-alert myadmin-alert-icon myadmin-alert-click alert-{{message.tags}} myadmin-alert-top alerttop" style="display: block;"> <i class="ti-user"></i>{{message}}<a href="#" class="closed">&times;</a> </div>
+		{% endfor %}
+	{% endif %}
   </header>
