@@ -29083,7 +29083,7 @@ ul.flexbox {
   -webkit-box-align: center;
   align-items: center; }
   .lookup::before {
-    content: "\e610";
+    content: "🔍";
     font-family: themify;
     font-size: 1rem;
     position: absolute;

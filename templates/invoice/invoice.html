@@ -43,7 +43,7 @@
                 <h4 class="box-title">Finance Invoices</h4>
                 <div class="box-controls pull-right">
                   <div class="lookup lookup-circle lookup-right">
-                    <input type="text" name="s" placeholder="Search Invoice" id="invoiceSearch">
+                    <input type="text" id="searchInput" name="s" placeholder="Search Invoice" autocomplete="off">
                   </div>
                 </div>
               </div>
@@ -99,6 +99,24 @@
                       </tr>
                       {% endfor %}
                     </table>
+
+                    <div class="pagination btn-toolbar" role="toolbar">
+                        <span class="step-links">
+                            {% if page_obj.has_previous %}
+                                <a href="?page=1">&laquo; first</a>
+                                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                            {% endif %}
+                    
+                            <span class="current">
+                                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                            </span>
+                    
+                            {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                                <a href="?page={{ page_obj.paginator.num_pages }}" >last &raquo;</a>
+                            {% endif %}
+                        </span>
+                    </div>
                   </div>
               </div>
               <!-- /.box-body -->
@@ -113,27 +131,49 @@
       <!-- /.content -->
     </div>
 </div>
+
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const searchInput = document.getElementById("invoiceSearch");
-    const rows = document.querySelectorAll("#invoiceTable tbody tr");
-
-    searchInput.addEventListener("keyup", function() {
-      const input = this.value.toLowerCase();
-
-      rows.forEach(function(row) {
-        const rowText = row.textContent.toLowerCase();
-        console.log(rowText); // For debugging
-        if (rowText.includes(input)) {
-          row.style.display = "";
-        } else {
-          row.style.display = "none";
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('input[name="s"]');
+    const tableBody = document.querySelector('.table tbody');
+    const originalRows = Array.from(tableBody.querySelectorAll('tr'));
+    
+    function performSearch() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        let visibleCount = 0;
+        
+        originalRows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            let rowVisible = false;
+            
+            if (searchTerm === '') {
+                rowVisible = true;
+            } else {
+                // Search through Invoice, Customer, Amount, Status columns
+                const searchableColumns = [0, 1, 4, 5];
+                
+                for (let i of searchableColumns) {
+                    if (cells[i] && cells[i].textContent.toLowerCase().includes(searchTerm)) {
+                        rowVisible = true;
+                        break;
+                    }
+                }
+            }
+            
+            row.style.display = rowVisible ? '' : 'none';
+            if (rowVisible) visibleCount++;
+        });
+        
+        // Optional: Add a "no results" message
+        if (visibleCount === 0 && searchTerm !== '') {
+            console.log('No results found');
         }
-      });
-    });
-  });
+    }
+    
+    searchInput.addEventListener('input', performSearch);
+    searchInput.addEventListener('keyup', performSearch);
+});
 </script>
-
 
 <!-- /.content-wrapper -->
 {% endblock main_content %}

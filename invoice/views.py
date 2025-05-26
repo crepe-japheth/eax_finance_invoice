@@ -114,6 +114,8 @@ class InvoiceView(ListView):
     model = Invoice
     template_name = 'invoice/invoice.html'
     context_object_name = "invoices"
+    paginate_by = 10
+    ordering = ['-created_at']
 
 
 class InvoiceDetailView(DetailView):
