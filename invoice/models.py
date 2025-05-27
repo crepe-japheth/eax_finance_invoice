@@ -38,7 +38,7 @@ class User(AbstractUser):
     
     email = models.EmailField(_('email address'), unique=True)
     profile_pic = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
-    user_role = models.CharField(max_length=20, choices=USER_ROLE_CHOICES, default='invoice_manager')
+    user_role = models.CharField(max_length=20, choices=USER_ROLE_CHOICES, default='superuser')
     force_password_change = models.BooleanField(default=True)
     
     class Meta:

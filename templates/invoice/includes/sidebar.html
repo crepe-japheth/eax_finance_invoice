@@ -35,13 +35,16 @@
 					<span>Invoice</span>
 				  </a>
 				</li>
-					     
-				<li>
-				  <a href="{% url 'user' %}">
-					<img src="https://master-admin-template.multipurposethemes.com/bs5/images/svg-icon/authentication.svg" class="svg-icon" alt="">
-					<span>Users</span>
-				  </a>
-				</li>
+
+				{% if request.user.user_role == "invoice_manager" %}
+				{% else %}	     
+					<li>
+						<a href="{% url 'user' %}">
+							<img src="https://master-admin-template.multipurposethemes.com/bs5/images/svg-icon/authentication.svg" class="svg-icon" alt="">
+							<span>Users</span>
+						</a>
+					</li>
+				{% endif %}
 					     
 			  </ul>
 		  </div>

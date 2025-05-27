@@ -91,9 +91,12 @@
                             <button class="btn btn-rounded btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">Manage</button>
                             <div class="dropdown-menu dropdown-menu-end">
                               <a class="dropdown-item" href="{% url 'invoice_detail' invoice.pk %}">View</a>
-                              {% if invoice.status != 'Paid' %}
-                                <a class="dropdown-item" href="{% url 'edit_invoice' invoice.pk %}">Update</a>
-                                <a class="dropdown-item" href="{% url 'invoice-delete' invoice.pk %}">Delete</a>
+                              {% if request.user.user_role == 'finance_manager' or request.user.user_role == 'superuser' %}
+                              {% else %}
+                                {% if invoice.status != 'Paid' %}
+                                  <a class="dropdown-item" href="{% url 'edit_invoice' invoice.pk %}">Update</a>
+                                  <a class="dropdown-item" href="{% url 'invoice-delete' invoice.pk %}">Delete</a>
+                                {% endif %}
                               {% endif %}
                             </div>
                           </div>
