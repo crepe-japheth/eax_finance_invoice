@@ -152,7 +152,7 @@
 								<i class="ti-save-alt"></i> Save
 							  </button>
 							</div>
-						  </form>
+						</form>
 						  
 					</div>
 					  <!-- /.box -->			
@@ -161,68 +161,6 @@
         </section>
     </div>
 </div>
-{% comment %} <script>
-	document.addEventListener("DOMContentLoaded", function () {
-	  const addButton = document.getElementById('add-file');
-	  const formsetDiv = document.getElementById('file-formset');
-	  const totalFormsInput = document.getElementById('id_form-TOTAL_FORMS');
-  
-	  addButton.addEventListener('click', function () {
-		const totalForms = parseInt(totalFormsInput.value);
-		const firstForm = formsetDiv.querySelector('.file-form');
-		const newForm = firstForm.cloneNode(true);
-  
-		// 🧹 Clean the clone: remove old remove buttons
-		const oldRemoveBtn = newForm.querySelector('button');
-		if (oldRemoveBtn) {
-		  oldRemoveBtn.remove();
-		}
-  
-		// Clear inputs and update names/IDs
-		newForm.querySelectorAll('input').forEach(input => {
-		  const name = input.name.replace(/form-\d+-/, `form-${totalForms}-`);
-		  const id = input.id.replace(/form-\d+-/, `form-${totalForms}-`);
-		  input.name = name;
-		  input.id = id;
-		  input.value = '';
-		});
-  
-		// Add fresh remove button
-		const removeBtn = createRemoveButton(newForm);
-		newForm.appendChild(removeBtn);
-  
-		formsetDiv.appendChild(newForm);
-		updateTotalForms();
-	  });
-  
-	  // Adds remove button to existing forms
-	  formsetDiv.querySelectorAll('.file-form').forEach(form => {
-		const removeBtn = createRemoveButton(form);
-		form.appendChild(removeBtn);
-	  });
-  
-	  function createRemoveButton(form) {
-		const btn = document.createElement('button');
-		btn.type = 'button';
-		btn.className = 'btn btn-danger mt-2';
-		btn.innerText = 'Remove';
-		btn.addEventListener('click', () => {
-		  if (formsetDiv.querySelectorAll('.file-form').length > 1) {
-			form.remove();
-			updateTotalForms();
-		  } else {
-			alert("At least one file input must remain!");
-		  }
-		});
-		return btn;
-	  }
-  
-	  function updateTotalForms() {
-		const total = formsetDiv.querySelectorAll('.file-form').length;
-		totalFormsInput.value = total;
-	  }
-	});
-</script> {% endcomment %}
 
 
 <script>
@@ -235,7 +173,7 @@
   
 		  // Add remove button to existing forms
 		  document.querySelectorAll(".file-form").forEach((form, index) => {
-			const isTemplate = form.style.display === "none"; // Skip template
+			const isTemplate = form.classList.contains("d-none");
 			const hasRemoveBtn = form.querySelector(".btn-danger");
 		
 			if (!isTemplate && !hasRemoveBtn) {
@@ -294,7 +232,7 @@
 		return btn;
 	  }
 	});
-  </script>
+</script>
   
   
   
