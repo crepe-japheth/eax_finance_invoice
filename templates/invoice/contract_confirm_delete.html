@@ -1,0 +1,68 @@
+{% extends "invoice/base.html" %}
+{% load static %}
+
+{% block main_content %}
+<div class="content-wrapper">
+    <div class="container-full">
+
+    <!-- Content Header (Page header) -->
+		<div class="content-header">
+			<div class="d-flex align-items-center">
+				<div class="me-auto">
+					<h4 class="page-title">Contract delete form</h4>
+					<div class="d-inline-block align-items-center">
+						<nav>
+							<ol class="breadcrumb">
+								<li class="breadcrumb-item"><a href="#"><i class="mdi mdi-home-outline"></i></a></li>
+								<li class="breadcrumb-item" aria-current="page">Contract</li>
+								<li class="breadcrumb-item active" aria-current="page">delete Contract</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+				
+			</div>
+		</div>	  
+
+		<!-- Main content -->
+		<section class="content">
+			<div class="row">
+
+                <div class="col-12">
+                    <div class="row justify-content-center g-0">
+                        <div class="col-lg-5 col-md-5 col-12">
+                            <div class="bg-white rounded10 shadow-lg">
+                                <div class="content-top-agile p-20 pb-0">
+                                    <h5 class="text-primary">Are you sure you want to delete the contract with <strong>{{ object.contract_with }}</strong>?</h5>
+                                    <small class="text-danger">Warning!, This action cannot be undone. </small>
+                                    {% if messages %}
+                                        {% for message in messages %}
+                                            <div class="alert alert-{{ message.tags }}" role="alert">
+                                                {{ message }}
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <div class="p-40">
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <!-- /.col -->
+                                            <div class="col-12 text-center">
+                                                <button type="submit" class="btn btn-danger margin-top-10">Delete Contract</button>
+                                                <a href="{% url 'contract_list' %}" class="btn btn-secondary">Cancel</a>
+                                            </div>
+                                            <!-- /.col -->
+                                        </div>
+                                    </form>				
+                                </div>
+                            </div>								
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+{% endblock main_content %}

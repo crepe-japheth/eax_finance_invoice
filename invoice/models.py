@@ -1,6 +1,6 @@
 from datetime import date, timedelta
 from django.db import models
-from django.db import models
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.utils.translation import gettext_lazy as _
 
@@ -88,6 +88,7 @@ class Invoice(models.Model):
     date_received = models.DateField()
     payment_due_date = models.DateField()
     customer_name = models.CharField(max_length=255)
+    contract = models.ForeignKey('Contract', on_delete=models.SET_NULL, blank=True, null=True)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='created_invoices')
@@ -138,6 +139,26 @@ class InvoiceStatusHistory(models.Model):
         return f"{self.invoice.invoice_number}: {self.previous_status} → {self.new_status} by {self.changed_by}"
 
 
+class Contract(models.Model):
+    contract_with = models.CharField(max_length=200)
+    started_at = models.DateField()
+    end_at = models.DateField()
+    contract_file = models.FileField(upload_to='contract_attachment/', blank=False, null=False)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='invoice_created_by')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True) 
 
+    def clean(self):
+        super().clean()
+        if self.started_at and self.end_at and self.started_at >= self.end_at:
+            raise ValidationError("Start date must be earlier than end date.")
+        
+    @property
+    def is_active(self):
+        today = date.today()
+        return self.started_at <= today <= self.end_at
+
+    def __str__(self):
+        return self.contract_with
 
 

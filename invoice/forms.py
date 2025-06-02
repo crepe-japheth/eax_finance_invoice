@@ -1,10 +1,11 @@
 from django import forms
-from .models import Invoice, InvoiceFile
-from django.forms import modelformset_factory, inlineformset_factory
+from .models import Invoice, InvoiceFile, Contract
+from django.forms import inlineformset_factory
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.forms import UserChangeForm
+from django.utils import timezone
 
 
 User = get_user_model()
@@ -14,14 +15,20 @@ User = get_user_model()
 class InvoiceForm(forms.ModelForm):
     class Meta:
         model = Invoice
-        fields = ['invoice_number', 'date_received', 'payment_due_date', 'customer_name', 'amount']
+        fields = ['invoice_number', 'date_received', 'payment_due_date', 'customer_name', 'amount', 'contract']
         widgets = {
             'date_received': forms.DateInput(attrs={'type': 'date', 'class':'form-control'}),
             'payment_due_date': forms.DateInput(attrs={'type': 'date', 'class':'form-control'}),
             'invoice_number': forms.TextInput(attrs={'type': 'text', 'class':'form-control'}),
             'customer_name': forms.TextInput(attrs={'type': 'text', 'class':'form-control'}),
+            'contract': forms.Select(attrs={'class':'form-control'}),
             'amount': forms.NumberInput(attrs={'type': 'number', 'class':'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        today = timezone.now().date()
+        self.fields['contract'].queryset = Contract.objects.filter(end_at__gte=today)
 
 
 
@@ -34,7 +41,7 @@ InvoiceFileFormSet = inlineformset_factory(
     can_delete=True,  # Allow deletion of existing files
     widgets={
         'file': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-        'description': forms.TextInput(attrs={'placeholder': 'e.g. Contract, Receipt', 'class': 'form-control'}),
+        'description': forms.TextInput(attrs={'placeholder': 'e.g. Quatation, LPO, Receipt', 'class': 'form-control'}),
     }
 )
 
@@ -164,3 +171,14 @@ class UserUpdateForm(UserChangeForm):
                 del self.fields['is_active']
 
 
+
+class ContractForm(forms.ModelForm):
+    class Meta:
+        model = Contract
+        fields = ['contract_with', 'started_at', 'end_at', 'contract_file']
+        widgets = {
+            'started_at': forms.DateInput(attrs={'type': 'date', 'class':'form-control'}),
+            'end_at': forms.DateInput(attrs={'type': 'date', 'class':'form-control'}),
+            'contract_file': forms.FileInput(attrs={'class':'form-control'}),
+            'contract_with': forms.TextInput(attrs={'type': 'text', 'class':'form-control'}),
+        }

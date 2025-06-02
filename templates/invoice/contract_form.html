@@ -1,0 +1,106 @@
+{% extends "invoice/base.html" %}
+{% load static %}
+
+{% block main_content %}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <div class="container-full">
+
+    <!-- Content Header (Page header) -->
+		<div class="content-header">
+			<div class="d-flex align-items-center">
+				<div class="me-auto">
+					<h4 class="page-title">Contract Form </h4>
+					<div class="d-inline-block align-items-center">
+						<nav>
+							<ol class="breadcrumb">
+								<li class="breadcrumb-item"><a href="{% url 'contract_list' %}"><i class="glyphicon glyphicon-circle-arrow-left"></i></a></li>
+								<li class="breadcrumb-item active" aria-current="page">Back</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+				
+			</div>
+		</div>	  
+
+		<!-- Main content -->
+		<section class="content">
+			<div class="row">			  
+				<div class="col-lg-12 col-12">
+					<div class="box">
+						<div class="box-header with-border">
+						  <h4 class="box-title">Contract Form</h4>
+						</div>
+						{% if form.errors %}
+							<div class="badge badge-pill badge-danger">
+								<ul>
+									{% for field in form %}
+										{% for error in field.errors %}
+											<li>{{ error }}</li>
+										{% endfor %}
+									{% endfor %}
+								</ul>
+							</div>
+						{% endif %}
+
+
+						<form method="post" enctype="multipart/form-data" class="form">
+							{% csrf_token %}
+                            {{ form.non_field_errors }}
+							<div class="box-body">
+							  <h4 class="box-title text-info mb-0"><i class="ti-user me-15"></i> Contract Info</h4>
+							  <hr class="my-15">
+						  
+							  <div class="row">
+								<div class="col-md-6">
+								  <div class="form-group">
+									<label>Contract Supplier</label>
+									{{ form.contract_with }}
+								  </div>
+								</div>
+								<div class="col-md-6">
+								  <div class="form-group">
+									<label>Started Date</label>
+									{{ form.started_at }}
+								  </div>
+								</div>
+							  </div>
+						  
+							  <div class="row">
+								<div class="col-md-6">
+								  <div class="form-group">
+									<label>End Date</label>
+									{{ form.end_at }}
+								  </div>
+								</div>
+								<div class="col-md-6">
+								  <div class="form-group">
+									<label>Contract Attachment</label>
+									{{ form.contract_file }}
+								  </div>
+								</div>
+							  </div>
+							</div>
+						  
+							<div class="box-footer">
+							  <a href="{% url 'contract_list' %}" class="btn btn-warning me-1">
+								<i class="ti-trash"></i> Cancel
+							  </a>
+							  <button type="submit" class="btn btn-primary">
+								<i class="ti-save-alt"></i> Save
+							  </button>
+							</div>
+						</form>
+						  
+					</div>
+					  <!-- /.box -->			
+				</div> 
+            </div>
+        </section>
+    </div>
+</div>  
+  
+{% endblock main_content %}
+

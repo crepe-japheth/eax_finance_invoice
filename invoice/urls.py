@@ -17,6 +17,10 @@ urlpatterns = [
     path('users/<int:pk>/update/', views.UserUpdateView.as_view(), name='user-update'),
     path('users/<int:pk>/delete/', views.UserDeleteView.as_view(), name='user-delete'),
     path('users/create/', views.create_user_view, name='create_user'),
+    path('contracts/', views.ContractListView.as_view(), name='contract_list'),
+    path('contracts/create/', views.ContractCreateView.as_view(), name='contract_create'),
+    path('contracts/<int:pk>/edit/', views.ContractUpdateView.as_view(), name='contract_update'),
+    path('contracts/<int:pk>/delete/', views.ContractDeleteView.as_view(), name='contract_delete'),
     
     # Login related URLs
     path('login/', auth_views.LoginView.as_view(template_name='invoice/login.html'), name='login'),

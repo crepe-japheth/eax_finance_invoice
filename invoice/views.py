@@ -2,11 +2,11 @@ from django.utils import timezone
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import UpdateView, DeleteView
+from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import InvoiceForm, InvoiceFileFormSet, InvoiceStatusUpdateForm, UserUpdateForm
-from .models import InvoiceFile, User, Invoice, InvoiceStatusHistory
+from .forms import InvoiceForm, InvoiceFileFormSet, InvoiceStatusUpdateForm, UserUpdateForm, ContractForm
+from .models import InvoiceFile, User, Invoice, InvoiceStatusHistory, Contract
 from django.shortcuts import get_object_or_404
 from invoice.utils.dashboard_chart import invoice_line_dashboard, get_yearly_status_totals, weekly_invoice_status_chart
 from django.contrib.auth import get_user_model, update_session_auth_hash
@@ -252,3 +252,43 @@ class UserDeleteView(LoginRequiredMixin, DeleteView):
     model = User
     success_url = reverse_lazy('user')  # Redirect to user list after deletion
     template_name = 'invoice/user_confirm_delete.html'
+
+
+class ContractListView(ListView):
+    model = Contract
+    template_name = 'invoice/contract_list.html'
+    context_object_name = 'contracts'
+    ordering = ['-created_at'] 
+    paginate_by = 10
+
+
+class ContractCreateView(CreateView):
+    model = Contract
+    form_class = ContractForm
+    template_name = 'invoice/contract_form.html'
+    success_url = reverse_lazy('contract_list')
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user 
+        messages.success(self.request, 'Contract updated successfully!')
+        return super().form_valid(form)
+    
+
+class ContractUpdateView(UpdateView):
+    model = Contract
+    form_class = ContractForm
+    template_name = 'invoice/contract_form.html'
+    success_url = reverse_lazy('contract_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Contract updated successfully!')
+        return super().form_valid(form)
+    
+class ContractDeleteView(DeleteView):
+    model = Contract
+    template_name = 'invoice/contract_confirm_delete.html'
+    success_url = reverse_lazy('contract_list')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Contract deleted successfully!')
+        return super().delete(request, *args, **kwargs)
