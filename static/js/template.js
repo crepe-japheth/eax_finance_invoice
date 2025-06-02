@@ -1552,7 +1552,7 @@ function w3_close() {
 		if (opacity <= 0) {
 			displayContent();
 		} else {
-			loader.style.opacity = opacity;
+			// loader.style.opacity = opacity;
 			window.setTimeout(function() {
 				loadNow(opacity - 0.05);
 			}, 50);
@@ -1560,7 +1560,7 @@ function w3_close() {
 	}
 
 	function displayContent() {
-		loader.style.display = 'none';
+		// loader.style.display = 'none';
 	}
 
 	document.addEventListener("DOMContentLoaded", function() {

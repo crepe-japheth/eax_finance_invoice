@@ -21,7 +21,7 @@ class InvoiceForm(forms.ModelForm):
             'payment_due_date': forms.DateInput(attrs={'type': 'date', 'class':'form-control'}),
             'invoice_number': forms.TextInput(attrs={'type': 'text', 'class':'form-control'}),
             'customer_name': forms.TextInput(attrs={'type': 'text', 'class':'form-control'}),
-            'contract': forms.Select(attrs={'class':'form-control'}),
+            'contract': forms.Select(attrs={'class':'form-control select2'}),
             'amount': forms.NumberInput(attrs={'type': 'number', 'class':'form-control'}),
         }
 
