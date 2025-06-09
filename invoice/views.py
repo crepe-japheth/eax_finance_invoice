@@ -47,67 +47,87 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class CreateInvoiceView(View):
-    def get(self, request):
-        invoice_form = InvoiceForm()
-        file_formset = InvoiceFileFormSet(queryset=InvoiceFile.objects.none())
-        return render(request, 'invoice/create_invoice.html', {
-            'invoice_form': invoice_form,
-            'file_formset': file_formset,
-        })
+class CreateInvoiceView(CreateView):
+    model = Invoice
+    form_class = InvoiceForm
+    template_name = 'invoice/create_invoice.html'
+    success_url = reverse_lazy('invoice')
 
-    def post(self, request):
-        invoice_form = InvoiceForm(request.POST)
-        file_formset = InvoiceFileFormSet(request.POST, request.FILES, queryset=InvoiceFile.objects.none())
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user 
+        messages.success(self.request, 'Invoice updated successfully!')
+        return super().form_valid(form)
+    
+# class CreateInvoiceView(View):
+#     def get(self, request):
+#         invoice_form = InvoiceForm()
+#         file_formset = InvoiceFileFormSet(queryset=InvoiceFile.objects.none())
+#         return render(request, 'invoice/create_invoice.html', {
+#             'invoice_form': invoice_form,
+#             'file_formset': file_formset,
+#         })
 
-        if invoice_form.is_valid() and file_formset.is_valid():
-            invoice = invoice_form.save(commit=False)
-            user = request.user
-            invoice.created_by = user #request.user
-            invoice.save()
+#     def post(self, request):
+#         invoice_form = InvoiceForm(request.POST)
+#         file_formset = InvoiceFileFormSet(request.POST, request.FILES, queryset=InvoiceFile.objects.none())
 
-            for file_form in file_formset:
-                if file_form.cleaned_data.get('file'):
-                    file_instance = file_form.save(commit=False)
-                    file_instance.invoice = invoice
-                    file_instance.save()
-                    messages.success(self.request, "Your Invoice was created successfully!")
+#         if invoice_form.is_valid() and file_formset.is_valid():
+#             invoice = invoice_form.save(commit=False)
+#             user = request.user
+#             invoice.created_by = user #request.user
+#             invoice.save()
 
-            return redirect('invoice')  # Or wherever you want
+#             for file_form in file_formset:
+#                 if file_form.cleaned_data.get('file'):
+#                     file_instance = file_form.save(commit=False)
+#                     file_instance.invoice = invoice
+#                     file_instance.save()
+#                     messages.success(self.request, "Your Invoice was created successfully!")
 
-        return render(request, 'invoice/create_invoice.html', {
-            'invoice_form': invoice_form,
-            'file_formset': file_formset,
-        })
+#             return redirect('invoice')  # Or wherever you want
 
+#         return render(request, 'invoice/create_invoice.html', {
+#             'invoice_form': invoice_form,
+#             'file_formset': file_formset,
+#         })
 
-class EditInvoiceView(View):
-    def get(self, request, pk):
-        invoice = get_object_or_404(Invoice, pk=pk)
-        invoice_form = InvoiceForm(instance=invoice)
-        file_formset = InvoiceFileFormSet(instance=invoice)
-        return render(request, 'invoice/edit_invoice.html', {
-            'invoice_form': invoice_form,
-            'file_formset': file_formset,
-            'invoice': invoice
-        })
+class EditInvoiceView(UpdateView):
+    model = Invoice
+    form_class = InvoiceForm
+    template_name = 'invoice/edit_invoice.html'
+    success_url = reverse_lazy('invoice')
 
-    def post(self, request, pk):
-        invoice = get_object_or_404(Invoice, pk=pk)
-        invoice_form = InvoiceForm(request.POST, instance=invoice)
-        file_formset = InvoiceFileFormSet(request.POST, request.FILES, instance=invoice, prefix='files')
-        if invoice_form.is_valid() and file_formset.is_valid():
-            print(invoice_form.errors)
-            invoice = invoice_form.save()
-            file_formset.save()
-            messages.success(self.request, "Invoice was Edit successfully!")
-            return redirect('invoice_detail', pk=invoice.pk)
+    def form_valid(self, form):
+        messages.success(self.request, 'Invoice updated successfully!')
+        return super().form_valid(form)
 
-        return render(request, 'invoice/edit_invoice.html', {
-            'invoice_form': invoice_form,
-            'file_formset': file_formset,
-            'invoice': invoice
-        })
+# class EditInvoiceView(View):
+#     def get(self, request, pk):
+#         invoice = get_object_or_404(Invoice, pk=pk)
+#         invoice_form = InvoiceForm(instance=invoice)
+#         file_formset = InvoiceFileFormSet(instance=invoice)
+#         return render(request, 'invoice/edit_invoice.html', {
+#             'invoice_form': invoice_form,
+#             'file_formset': file_formset,
+#             'invoice': invoice
+#         })
+
+#     def post(self, request, pk):
+#         invoice = get_object_or_404(Invoice, pk=pk)
+#         invoice_form = InvoiceForm(request.POST, instance=invoice)
+#         file_formset = InvoiceFileFormSet(request.POST, request.FILES, instance=invoice, prefix='files')
+#         if invoice_form.is_valid() and file_formset.is_valid():
+#             print(invoice_form.errors)
+#             invoice = invoice_form.save()
+#             file_formset.save()
+#             messages.success(self.request, "Invoice was Edit successfully!")
+#             return redirect('invoice_detail', pk=invoice.pk)
+
+#         return render(request, 'invoice/edit_invoice.html', {
+#             'invoice_form': invoice_form,
+#             'file_formset': file_formset,
+#             'invoice': invoice
+#         })
 
 
 class InvoiceView(ListView):

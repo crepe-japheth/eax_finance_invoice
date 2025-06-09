@@ -33,10 +33,10 @@
 						<div class="box-header with-border">
 						  <h4 class="box-title">Create New Invoice</h4>
 						</div>
-						{% if invoice_form.errors %}
+						{% if form.errors %}
 							<div class="badge badge-pill badge-danger">
 								<ul>
-									{% for field in invoice_form %}
+									{% for field in form %}
 										{% for error in field.errors %}
 											<li>{{ error }}</li>
 										{% endfor %}
@@ -56,13 +56,13 @@
 								<div class="col-md-6">
 								  <div class="form-group">
 									<label>Invoice Number</label>
-									{{ invoice_form.invoice_number }}
+									{{ form.invoice_number }}
 								  </div>
 								</div>
 								<div class="col-md-6">
 								  <div class="form-group">
 									<label>Customer Name</label>
-									{{ invoice_form.customer_name }}
+									{{ form.customer_name }}
 								  </div>
 								</div>
 							  </div>
@@ -71,13 +71,13 @@
 								<div class="col-md-6">
 								  <div class="form-group">
 									<label>Date Received</label>
-									{{ invoice_form.date_received }}
+									{{ form.date_received }}
 								  </div>
 								</div>
 								<div class="col-md-6">
 								  <div class="form-group">
 									<label>Payment Due Date</label>
-									{{ invoice_form.payment_due_date }}
+									{{ form.payment_due_date }}
 								  </div>
 								</div>
 							  </div>
@@ -85,18 +85,57 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<label>Amount</label>
-										{{ invoice_form.amount }}
+										{{ form.amount }}
 									</div>
 								</div>
-								<div class="col-md-6">
+								{% comment %} <div class="col-md-6">
 									<div class="form-group">
 										<label>Contract</label>
 										{{ invoice_form.contract }}
 									</div>
-								</div>
+								</div> {% endcomment %}
 							  </div>
 						  
-							  <h4 class="box-title text-info mb-0 mt-20"><i class="ti-save me-15"></i> Required Files</h4>
+							  <h4 class="box-title text-info mb-0 mt-20"><i class="ti-save me-15"></i>Attached Files</h4>
+							  <hr class="my-15">
+							  <div class="demo-checkbox">									
+									{{ form.EBM_invoice }}
+									<label for="{{ form.EBM_invoice.id_for_label }}">EBM Invoice</label>									
+									{{ form.CIT_declaration }}
+									<label for="{{ form.CIT_declaration.id_for_label }}">CIT declatation</label>									
+									{{ form.good_received_note }}
+									<label for="{{ form.good_received_note.id_for_label }}">Good Received Note</label>									
+									{{ form.delivery_note }}
+									<label for="{{ form.delivery_note.id_for_label }}">Delivery Note</label>									
+									{{ form.purchase_order }}
+									<label for="{{ form.purchase_order.id_for_label }}">Purchase Order</label>									
+									{{ form.profoma }}
+									<label for="{{ form.profoma.id_for_label }}">Profoma</label>									
+									{{ form.contract_copy }}
+									<label for="{{ form.contract_copy.id_for_label }}">Copy of Contract</label>									
+									{{ form.final_notification_letter }}
+									<label for="{{ form.final_notification_letter.id_for_label }}">Final notification Letter</label>									
+									{{ form.tender_evaluation_report }}
+									<label for="{{ form.tender_evaluation_report.id_for_label }}">Tender Evaluation Report</label>									
+									{{ form.perfomance_guaranty }}
+									<label for="{{ form.perfomance_guaranty.id_for_label }}">Perfomance Guaranty</label>									
+									{{ form.advance_security }}
+									<label for="{{ form.advance_security.id_for_label }}">Advance Security</label>									
+									{{ form.tender_advertisement }}
+									<label for="{{ form.tender_advertisement.id_for_label }}">Tender Advertisement</label>									
+									{{ form.requisition_form }}
+									<label for="{{ form.requisition_form.id_for_label }}">Requisition Form</label>									
+									{{ form.official_appointment_of_receiving_committee }}
+									<label for="{{ form.official_appointment_of_receiving_committee.id_for_label }}">Official Appointment of Receiving Committee</label>									
+									{{ form.evaluation_report_of_previous_period }}
+									<label for="{{ form.evaluation_report_of_previous_period.id_for_label }}">Evaluation Report of Previous Period</label>									
+									{{ form.attendance_list }}
+									<label for="{{ form.attendance_list.id_for_label }}">Attendance List</label>									
+									{{ form.mission_clearance_signed_at_destination }}
+									<label for="{{ form.mission_clearance_signed_at_destination.id_for_label }}">Mission Clearance Signed at Destination</label>									
+														
+							  </div>
+							  {% comment %} <h4 class="box-title text-info mb-0 mt-20"><i class="ti-save me-15"></i> Required Files</h4>
 							  <hr class="my-15">
 						  
 							  {{ file_formset.management_form }}
@@ -127,10 +166,10 @@
 									{% endif %}
 								  </div>
 								{% endfor %}
-							  </div>
+							  </div> {% endcomment %}
 						  
 							  <!-- Hidden empty form template -->
-							  <div id="empty-form-template" class="file-form d-none">
+							  {% comment %} <div id="empty-form-template" class="file-form d-none">
 								{{ file_formset.empty_form.id }}
 								<div class="row">
 								  <div class="col-md-8">
@@ -146,14 +185,14 @@
 									</div>
 								  </div>
 								</div>
-							  </div>
+							  </div> {% endcomment %}
 						  
 							</div>
 						  
 							<div class="box-footer">
-							  <button type="button" id="add-file" class="btn btn-secondary mt-2">
+							  {% comment %} <button type="button" id="add-file" class="btn btn-secondary mt-2">
 								<i class="ti-plus"></i> Add More File
-							  </button>
+							  </button> {% endcomment %}
 							  <a href="{% url 'invoice' %}" class="btn btn-warning me-1">
 								<i class="ti-trash"></i> Cancel
 							  </a>
@@ -171,7 +210,7 @@
     </div>
 </div>
 
-
+{% comment %} 
 <script>
 	document.addEventListener("DOMContentLoaded", function () {
 	  const formsetPrefix = "files";
@@ -241,7 +280,7 @@
 		return btn;
 	  }
 	});
-</script>
+</script> {% endcomment %}
   
   
   

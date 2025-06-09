@@ -15,7 +15,7 @@ User = get_user_model()
 class InvoiceForm(forms.ModelForm):
     class Meta:
         model = Invoice
-        fields = ['invoice_number', 'date_received', 'payment_due_date', 'customer_name', 'amount', 'contract']
+        fields = ['invoice_number', 'date_received', 'payment_due_date', 'customer_name', 'amount', 'contract','EBM_invoice','CIT_declaration','good_received_note','delivery_note','profoma', 'contract_copy', 'final_notification_letter', 'tender_evaluation_report', 'perfomance_guaranty', 'advance_security', 'tender_advertisement', 'requisition_form', 'official_appointment_of_receiving_committee', 'evaluation_report_of_previous_period', 'attendance_list', 'mission_clearance_signed_at_destination','purchase_order']
         widgets = {
             'date_received': forms.DateInput(attrs={'type': 'date', 'class':'form-control'}),
             'payment_due_date': forms.DateInput(attrs={'type': 'date', 'class':'form-control'}),
@@ -23,6 +23,24 @@ class InvoiceForm(forms.ModelForm):
             'customer_name': forms.TextInput(attrs={'type': 'text', 'class':'form-control'}),
             'contract': forms.Select(attrs={'class':'form-control select2'}),
             'amount': forms.NumberInput(attrs={'type': 'number', 'class':'form-control'}),
+            'EBM_invoice':forms.CheckboxInput(attrs={'class': 'filled-in chk-col-success'}),
+            'CIT_declaration':forms.CheckboxInput(attrs={'class': 'filled-in chk-col-success'}),
+            'good_received_note':forms.CheckboxInput(attrs={'class': 'filled-in chk-col-success'}),
+            'delivery_note':forms.CheckboxInput(attrs={'class': 'filled-in chk-col-success'}),
+            'purchase_order':forms.CheckboxInput(attrs={'class': 'filled-in chk-col-success'}),
+            'profoma':forms.CheckboxInput(attrs={'class': 'filled-in chk-col-success'}),
+            'contract_copy':forms.CheckboxInput(attrs={'class': 'filled-in chk-col-success'}),
+            'final_notification_letter':forms.CheckboxInput(attrs={'class': 'filled-in chk-col-success'}),
+            'tender_evaluation_report':forms.CheckboxInput(attrs={'class': 'filled-in chk-col-success'}),
+            'perfomance_guaranty':forms.CheckboxInput(attrs={'class': 'filled-in chk-col-success'}),
+            'advance_security':forms.CheckboxInput(attrs={'class': 'filled-in chk-col-success'}),
+            'tender_advertisement':forms.CheckboxInput(attrs={'class': 'filled-in chk-col-success'}),
+            'requisition_form':forms.CheckboxInput(attrs={'class': 'filled-in chk-col-success'}),
+            'official_appointment_of_receiving_committee':forms.CheckboxInput(attrs={'class': 'filled-in chk-col-success'}),
+            'evaluation_report_of_previous_period':forms.CheckboxInput(attrs={'class': 'filled-in chk-col-success'}),
+            'attendance_list':forms.CheckboxInput(attrs={'class': 'filled-in chk-col-success'}),
+            'mission_clearance_signed_at_destination':forms.CheckboxInput(attrs={'class': 'filled-in chk-col-success'}),
+
         }
 
     def __init__(self, *args, **kwargs):

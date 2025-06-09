@@ -65,21 +65,109 @@
               <tr>
                 <th>#File</th>
                 <th>File Attachment</th>
-                <th>File Description</th>
-                <th>View</th>
               </tr>
-              {% if invoice.files.all %}
-                {% for file in invoice.files.all %}
+              {% if invoice.EBM_invoice %}
                 <tr>
-                    <td>{{forloop.counter}}</td>
-                    <td><a href="{{ file.file.url }}" target="_blank">{{ file.file.name|default:"Download File" }}</a></td>
-                    <td>{{file.description}}</td>
-                    <td class="text-end"><a class="btn btn-primary"  href="{{ file.file.url }}" target="_blank">View</a></td>
+                  <td>-</td>
+                    <td> <i class="glyphicon glyphicon-ok text-success"></i> EBM Invoice</td>
                 </tr>
-                {% endfor %}
-            {% else %}
-                <p>No files uploaded for this invoice.</p>
-            {% endif %}
+              {% endif %}
+              {% if invoice.CIT_declaration %}
+                <tr>
+                  <td>-</td>
+                    <td> <i class="glyphicon glyphicon-ok text-success"></i>CIT declaration</td>
+                </tr>
+              {% endif %}
+              {% if invoice.good_received_note %}
+                <tr>
+                  <td>-</td>
+                    <td> <i class="glyphicon glyphicon-ok text-success"></i>Good Received Note</td>
+                </tr>
+              {% endif %}
+              {% if invoice.delivery_note %}
+                <tr>
+                  <td>-</td>
+                    <td> <i class="glyphicon glyphicon-ok text-success"></i>Delivery Note</td>
+                </tr>
+              {% endif %}
+              {% if invoice.purchase_order %}
+                <tr>
+                  <td>-</td>
+                    <td> <i class="glyphicon glyphicon-ok text-success"></i>Purchase Order</td>
+                </tr>
+              {% endif %}
+              {% if invoice.profoma %}
+                <tr>
+                  <td>-</td>
+                    <td> <i class="glyphicon glyphicon-ok text-success"></i>Profoma</td>
+                </tr>
+              {% endif %}
+              {% if invoice.contract_copy %}
+                <tr>
+                  <td>-</td>
+                    <td> <i class="glyphicon glyphicon-ok text-success"></i>Copy of Contract</td>
+                </tr>
+              {% endif %}
+              {% if invoice.final_notification_letter %}
+                <tr>
+                  <td>-</td>
+                    <td> <i class="glyphicon glyphicon-ok text-success"></i>Final Notification Letter</td>
+                </tr>
+              {% endif %}
+              {% if invoice.tender_evaluation_report %}
+                <tr>
+                  <td>-</td>
+                    <td> <i class="glyphicon glyphicon-ok text-success"></i>Tender Evaluation Report</td>
+                </tr>
+              {% endif %}
+              {% if invoice.perfomance_guaranty %}
+                <tr>
+                  <td>-</td>
+                    <td> <i class="glyphicon glyphicon-ok text-success"></i>Perfomance Guaranty</td>
+                </tr>
+              {% endif %}
+              {% if invoice.advance_security %}
+                <tr>
+                  <td>-</td>
+                    <td> <i class="glyphicon glyphicon-ok text-success"></i>Advance Security</td>
+                </tr>
+              {% endif %}
+              {% if invoice.tender_advertisement %}
+                <tr>
+                  <td>-</td>
+                    <td> <i class="glyphicon glyphicon-ok text-success"></i>Tender Advdertisement</td>
+                </tr>
+              {% endif %}
+              {% if invoice.requisition_form %}
+                <tr>
+                  <td>-</td>
+                    <td> <i class="glyphicon glyphicon-ok text-success"></i>Requisition Form</td>
+                </tr>
+              {% endif %}
+              {% if invoice.official_appointment_of_receiving_committee %}
+                <tr>
+                  <td>-</td>
+                    <td> <i class="glyphicon glyphicon-ok text-success"></i>Official Appointment of Receiving Committee</td>
+                </tr>
+              {% endif %}
+              {% if invoice.evaluation_report_of_previous_period %}
+                <tr>
+                  <td>-</td>
+                    <td> <i class="glyphicon glyphicon-ok text-success"></i>Evaluation Report of Previous Period</td>
+                </tr>
+              {% endif %}
+              {% if invoice.attendance_list %}
+                <tr>
+                  <td>-</td>
+                    <td> <i class="glyphicon glyphicon-ok text-success"></i>Attendance List</td>
+                </tr>
+              {% endif %}
+              {% if invoice.officialmission_clearance_signed_at_destination_appointment_of_receiving_committee %}
+                <tr>
+                  <td>-</td>
+                    <td> <i class="glyphicon glyphicon-ok text-success"></i>Mission Clearance Signed at Destination</td>
+                </tr>
+              {% endif %}
               </tbody>
             </table>
           </div>
