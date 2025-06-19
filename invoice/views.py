@@ -134,7 +134,7 @@ class InvoiceView(ListView):
     model = Invoice
     template_name = 'invoice/invoice.html'
     context_object_name = "invoices"
-    paginate_by = 10
+    paginate_by = 30
     ordering = ['-created_at']
 
 
@@ -312,3 +312,19 @@ class ContractDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, 'Contract deleted successfully!')
         return super().delete(request, *args, **kwargs)
+    
+
+@login_required
+def confirm_invoice_received(request, invoice_id):
+    invoice = get_object_or_404(Invoice, id=invoice_id)
+    
+    if not invoice.received_by_finance:
+        invoice.received_by_finance = True
+        invoice.received_by = request.user
+        invoice.received_at = timezone.now()
+        invoice.save()
+        messages.success(request, f"Invoice {invoice.invoice_number} confirmed as received.")
+    else:
+        messages.warning(request, f"Invoice {invoice.invoice_number} has already been confirmed.")
+
+    return redirect('invoice')  # redirect to the invoice list

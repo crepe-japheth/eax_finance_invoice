@@ -45,4 +45,6 @@ urlpatterns = [
     path('password/reset/complete/', 
         auth_views.PasswordResetCompleteView.as_view(template_name='invoice/password_reset_complete.html'), 
         name='password_reset_complete'),
+        
+    path('invoices/<int:invoice_id>/confirm/', views.confirm_invoice_received, name='confirm_invoice_received'),
 ]

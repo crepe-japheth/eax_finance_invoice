@@ -35,14 +35,14 @@
 					<span>Invoice</span>
 				  </a>
 				</li>
-				<li>
+				{% comment %} <li>
 				  <a href="{% url 'contract_list' %}">
 					<img src="https://master-admin-template.multipurposethemes.com/bs5/images/svg-icon/tables.svg" class="svg-icon" alt="">
 					<span>Contract</span>
 				  </a>
-				</li>
+				</li> {% endcomment %}
 
-				{% if request.user.user_role == "invoice_manager" %}
+				{% if request.user.user_role == "invoice_manager"%}
 				{% else %}	     
 					<li>
 						<a href="{% url 'user' %}">

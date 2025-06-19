@@ -112,6 +112,9 @@ class Invoice(models.Model):
     reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_invoices')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    received_by_finance = models.BooleanField(default=False)
+    received_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='received_invoices')
+    received_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.invoice_number} - {self.customer_name}"

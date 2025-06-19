@@ -65,7 +65,21 @@
                         <td>
                           <a href="javascript:void(0)">{{invoice.invoice_number}}</a>
                         </td>
-                        <td>{{invoice.customer_name}}</td>
+                        <td>
+                          <span class="text-muted">
+                            {% if invoice.received_by_finance %}
+                              <i class="glyphicon glyphicon-ok text-success"></i>
+                            {% else %}
+                              <i class="glyphicon glyphicon-remove text-danger"></i>
+                            {% endif %}
+                            {{invoice.customer_name}}
+                          </span> <br>
+                          {% if invoice.received_by_finance %}
+                            <small class="text-info">Received by {{ invoice.received_by.username }}</small>
+                          {% else %}
+                            <small class="text-danger">Not yet Received</small>
+                          {% endif %}
+                        </td>
                         <td>
                           <span class="text-muted"><i class="glyphicon glyphicon-calendar"></i> {{invoice.date_received}}</span> 
                         </td>
@@ -92,6 +106,12 @@
                             <div class="dropdown-menu dropdown-menu-end">
                               <a class="dropdown-item" href="{% url 'invoice_detail' invoice.pk %}">View</a>
                               {% if request.user.user_role == 'finance_manager' or request.user.user_role == 'superuser' %}
+                                {% if not invoice.received_by_finance %}
+                                  <form action="{% url 'confirm_invoice_received' invoice.pk %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item btn btn-success">Confirm Received</button>
+                                  </form>
+                                {% endif %}
                               {% else %}
                                 {% if invoice.status != 'Paid' %}
                                   <a class="dropdown-item" href="{% url 'edit_invoice' invoice.pk %}">Update</a>
