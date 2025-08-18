@@ -16,7 +16,9 @@ from django.urls import reverse_lazy
 from .forms import UserCreationForm, FirstLoginPasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
-# views.py
+from django.http import HttpResponse
+from tablib import Dataset
+from .resources import InvoiceResource
 
 User = get_user_model()
 
@@ -328,3 +330,11 @@ def confirm_invoice_received(request, invoice_id):
         messages.warning(request, f"Invoice {invoice.invoice_number} has already been confirmed.")
 
     return redirect('invoice')  # redirect to the invoice list
+
+
+def export_invoices_excel(request):
+    resource = InvoiceResource()
+    dataset = resource.export()
+    response = HttpResponse(dataset.xlsx, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="invoices.xlsx"'
+    return response

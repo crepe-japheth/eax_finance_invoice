@@ -47,4 +47,7 @@ urlpatterns = [
         name='password_reset_complete'),
         
     path('invoices/<int:invoice_id>/confirm/', views.confirm_invoice_received, name='confirm_invoice_received'),
+
+    path('export-invoices/', views.export_invoices_excel, name='export_invoices'),
+
 ]
