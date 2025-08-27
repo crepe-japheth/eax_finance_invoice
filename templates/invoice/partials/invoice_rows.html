@@ -1,0 +1,67 @@
+{% for invoice in invoices %}
+<tr>
+  <td>
+    <a href="javascript:void(0)">{{invoice.invoice_number}}</a>
+  </td>
+  <td>
+    <span class="text-muted">
+      {% if invoice.received_by_finance %}
+        <i class="glyphicon glyphicon-ok text-success"></i>
+      {% else %}
+        <i class="glyphicon glyphicon-remove text-danger"></i>
+      {% endif %}
+      {{invoice.customer_name}}
+    </span> <br>
+    {% if invoice.received_by_finance %}
+      <small class="text-info">Received by {{ invoice.received_by.username }}</small>
+    {% else %}
+      <small class="text-danger">Not yet Received</small>
+    {% endif %}
+  </td>
+  <td>
+    <span class="text-muted"><i class="glyphicon glyphicon-calendar"></i> {{invoice.date_received}}</span>
+  </td>
+  <td>
+    <span class="text-muted"><i class="glyphicon glyphicon-calendar"></i> {{invoice.payment_due_date}}</span>
+    {% if invoice.is_overdue %}
+        <span class="badge badge-pill badge-danger">Overdue</span>
+    {% elif invoice.is_approaching_due_date %}
+        <span class="badge badge-pill badge-warning">Due Soon</span>
+    {% else %}
+        <span class="badge badge-pill badge-success">On Track</span>
+    {% endif %}
+  </td>
+  <td>Rwf {{invoice.amount}}</td>
+  <td>
+    <span class="badge badge-pill {% if invoice.status == 'Paid' %}badge-success
+    {% elif invoice.status == 'Pending' %}badge-warning
+    {% elif invoice.status == 'Incomplete' %}badge-danger
+    {% else %}badge-secondary{% endif %}">{{invoice.status}}</span>
+  </td>
+  <td>
+    <div class="btn-group">
+      <button class="btn btn-rounded btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">Manage</button>
+      <div class="dropdown-menu dropdown-menu-end">
+        <a class="dropdown-item" href="{% url 'invoice_detail' invoice.pk %}">View</a>
+        {% if request.user.user_role == 'finance_manager' or request.user.user_role == 'superuser' %}
+          {% if not invoice.received_by_finance %}
+            <form action="{% url 'confirm_invoice_received' invoice.pk %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="dropdown-item btn btn-success">Confirm Received</button>
+            </form>
+          {% endif %}
+        {% else %}
+          {% if invoice.status != 'Paid' %}
+            <a class="dropdown-item" href="{% url 'edit_invoice' invoice.pk %}">Update</a>
+            <a class="dropdown-item" href="{% url 'invoice-delete' invoice.pk %}">Delete</a>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <td colspan="7" class="text-center text-muted">No invoices found</td>
+</tr>
+{% endfor %}

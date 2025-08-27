@@ -133,6 +133,13 @@ class Invoice(models.Model):
             return False
         today = date.today()
         return today <= self.payment_due_date <= today + timedelta(days=days)
+    
+
+    def total_paid(self):
+        return sum(p.amount_paid for p in self.payments.all())
+
+    def remaining_balance(self):
+        return self.amount - self.total_paid()
 
 
 
@@ -182,4 +189,13 @@ class Contract(models.Model):
     def __str__(self):
         return self.contract_with
 
+
+class InvoicePayment(models.Model):
+    invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, related_name='payments')
+    amount_paid = models.DecimalField(max_digits=12, decimal_places=2)
+    paid_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    paid_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.invoice.invoice_number} - Paid {self.amount_paid}"
 

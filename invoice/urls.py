@@ -49,5 +49,7 @@ urlpatterns = [
     path('invoices/<int:invoice_id>/confirm/', views.confirm_invoice_received, name='confirm_invoice_received'),
 
     path('export-invoices/', views.export_invoices_excel, name='export_invoices'),
+    path("search-invoices/", views.live_search_invoices, name="live_search_invoices"),
+    path("invoices/status/<str:status>/", views.InvoiceStatusListView.as_view(), name="invoice_status_list"),
 
 ]

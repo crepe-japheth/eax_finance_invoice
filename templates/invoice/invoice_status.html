@@ -1,0 +1,118 @@
+{% extends "invoice/base.html" %}
+{% block main_content %}
+    <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <div class="container-full">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+          <div class="d-flex align-items-center">
+              <div class="me-auto">
+                  <h4 class="page-title">All Invoices</h4>
+                  <div class="d-inline-block align-items-center">
+                      <nav>
+                          <ol class="breadcrumb">
+                              <li class="breadcrumb-item"><a href="#"><i class="mdi mdi-home-outline"></i></a></li>
+                              <li class="breadcrumb-item" aria-current="page">Invoice</li>
+                              <li class="breadcrumb-item active" aria-current="page">All Invoices</li>
+                          </ol>
+                      </nav>
+                  </div>
+              </div>
+              
+          </div>
+      </div>
+
+      <!-- Main content -->
+      <section class="content">
+
+        <div class="row">
+          <div class="col-lg-3 col-md-4">
+              <div class="box no-shadow">
+                  <div class="box-body">
+                    <a href="{% url 'create_invoice' %}" class="btn btn-success mt-10 d-block text-center">+ Add New</a>
+                </div>
+              </div>
+          </div>				
+        </div>
+
+        <div class="row">
+
+          <div class="col-12">
+            <div class="box">
+              <div class="box-header with-border">
+                <h4 class="box-title">Finance Invoices</h4>
+                <a href="{% url 'export_invoices' %}" class="btn btn-success mp-2">📥 Download</a>
+                <div class="box-controls pull-right">
+                  <div class="lookup lookup-circle lookup-right">
+                    <input type="text" id="invoiceSearchInput" placeholder="Search invoices..." class="form-control mb-3">
+                    {% comment %} <input type="text" id="searchInput" name="s" placeholder="Search Invoice" autocomplete="off"> {% endcomment %}
+                  </div>
+                </div>
+              </div>
+              <!-- /.box-header -->
+              <div class="box-body no-padding">
+                  <div class="table-responsive">
+                    <table class="table table-hover" id="invoiceSearch">
+                      <thead>
+                      <tr>
+                        <th>Invoice</th>
+                        <th>Customer</th>
+                        <th>Date Received</th>
+                        <th>Date Due</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                      </thead>
+                      <tbody id="invoiceTableBody">
+                        {% include "invoice/partials/invoice_rows.html" with invoices=invoices %}
+                      </tbody>
+                    </table>
+
+                    <div class="pagination btn-toolbar" role="toolbar">
+                        <div id="paginationContainer">
+                          {% include "invoice/partials/pagination.html" with page_obj=page_obj %}
+                        </div>
+                    </div>
+                  </div>
+              </div>
+              <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+          </div>
+
+        </div>
+        <!-- /.row -->
+
+      </section>
+      <!-- /.content -->
+    </div>
+</div>
+
+
+<script>
+function fetchInvoices(query="", page=1) {
+    fetch(`/search-invoices/?q=${query}&page=${page}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("invoiceTableBody").innerHTML = data.rows_html;
+            document.getElementById("paginationContainer").innerHTML = data.pagination_html;
+
+            document.querySelectorAll("#paginationContainer .page-link").forEach(link => {
+                link.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    let page = this.getAttribute("data-page");
+                    fetchInvoices(document.getElementById("invoiceSearchInput").value, page);
+                });
+            });
+        });
+}
+
+document.getElementById("invoiceSearchInput").addEventListener("keyup", function() {
+    fetchInvoices(this.value, 1);
+});
+</script>
+
+
+<!-- /.content-wrapper -->
+{% endblock main_content %}

@@ -132,29 +132,68 @@ class FirstLoginPasswordChangeForm(PasswordChangeForm):
 
 
 
+# class InvoiceStatusUpdateForm(forms.ModelForm):
+#     comment = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control' ,"rows":"2" ,"cols":"50"}), required=False, help_text="Required if status is set to 'Incomplete'")
+
+#     class Meta:
+#         model = Invoice
+#         fields = ['status']
+#         widgets = {
+#             'status': forms.Select(attrs={'class':'form-control'}),
+#         }
+
+#     def __init__(self, *args, **kwargs):
+#         self.user = kwargs.pop('user', None)  # Pass user from view
+#         self.invoice_instance = kwargs.get('instance')
+#         super().__init__(*args, **kwargs)
+
+#     def clean(self):
+#         cleaned_data = super().clean()
+#         status = cleaned_data.get('status')
+#         comment = self.data.get('comment')  # Get from POST data
+#         if status == 'Incomplete' and not comment.strip():
+#             raise forms.ValidationError("Comment is required when marking invoice as Incomplete.")
+#         return cleaned_data
+    
+
+
 class InvoiceStatusUpdateForm(forms.ModelForm):
-    comment = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control' ,"rows":"2" ,"cols":"50"}), required=False, help_text="Required if status is set to 'Incomplete'")
+    comment = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'form-control', "rows": "2", "cols": "50"}),
+        required=False
+    )
+    partial_payment_amount = forms.DecimalField(
+        max_digits=12, decimal_places=2, required=False,
+        widget=forms.NumberInput(attrs={'class': 'form-control'})
+    )
 
     class Meta:
         model = Invoice
         fields = ['status']
-        widgets = {
-            'status': forms.Select(attrs={'class':'form-control'}),
-        }
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)  # Pass user from view
+        self.user = kwargs.pop('user', None)
         self.invoice_instance = kwargs.get('instance')
         super().__init__(*args, **kwargs)
 
     def clean(self):
         cleaned_data = super().clean()
         status = cleaned_data.get('status')
-        comment = self.data.get('comment')  # Get from POST data
-        if status == 'Incomplete' and not comment.strip():
+        comment = self.data.get('comment', '').strip()
+        partial_payment = cleaned_data.get('partial_payment_amount')
+
+        if status == 'Incomplete' and not comment:
             raise forms.ValidationError("Comment is required when marking invoice as Incomplete.")
+
+        if status == 'Not Fully Paid':
+            if not partial_payment or partial_payment <= 0:
+                raise forms.ValidationError("Partial payment amount is required for 'Not Fully Paid'.")
+            if partial_payment > self.invoice_instance.remaining_balance():
+                raise forms.ValidationError("Partial payment exceeds remaining balance.")
+
         return cleaned_data
-    
+
+
 
 
 

@@ -6,7 +6,7 @@ from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import InvoiceForm, InvoiceFileFormSet, InvoiceStatusUpdateForm, UserUpdateForm, ContractForm
-from .models import InvoiceFile, User, Invoice, InvoiceStatusHistory, Contract
+from .models import InvoiceFile, User, Invoice, InvoiceStatusHistory, Contract, InvoicePayment
 from django.shortcuts import get_object_or_404
 from invoice.utils.dashboard_chart import invoice_line_dashboard, get_yearly_status_totals, weekly_invoice_status_chart
 from django.contrib.auth import get_user_model, update_session_auth_hash
@@ -19,6 +19,12 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse
 from tablib import Dataset
 from .resources import InvoiceResource
+
+# views.py
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+from django.db.models import Q
+from django.core.paginator import Paginator
 
 User = get_user_model()
 
@@ -140,11 +146,16 @@ class InvoiceView(ListView):
     ordering = ['-created_at']
 
 
-class InvoiceDetailView(DetailView):
+class InvoiceDetailView(LoginRequiredMixin, DetailView):
     model = Invoice
-    template_name = "invoice/invoice_detail.html"
-    context_object_name = "invoice"
+    template_name = 'invoice/invoice_detail.html'
+    context_object_name = 'invoice'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['status_history'] = self.object.status_history.all().order_by('-changed_at')
+        context['payment_history'] = self.object.payments.all().order_by('-paid_at')
+        return context
 
 def is_superuser(user):
     """Check if user is a superuser"""
@@ -232,26 +243,64 @@ class InvoiceStatusUpdateView(LoginRequiredMixin, UpdateView):
         kwargs['user'] = self.request.user  # pass user to the form
         return kwargs
 
+    # def form_valid(self, form):
+    #     invoice = form.instance
+    #     old_status = invoice.status
+    #     new_status = form.cleaned_data['status']
+    #     comment = self.request.POST.get('comment', '')
+
+    #     # Save new invoice status
+    #     response = super().form_valid(form)
+
+    #     # Save status change history
+    #     if old_status != new_status:
+    #         InvoiceStatusHistory.objects.create(
+    #             invoice=invoice,
+    #             previous_status=old_status,
+    #             new_status=new_status,
+    #             comment=comment if new_status == 'Incomplete' else '',
+    #             changed_by=self.request.user
+    #         )
+    #         messages.success(self.request, "Your invoice status was updated successfully!")
+    #     return response
+
+
     def form_valid(self, form):
         invoice = form.instance
         old_status = invoice.status
         new_status = form.cleaned_data['status']
         comment = self.request.POST.get('comment', '')
 
-        # Save new invoice status
         response = super().form_valid(form)
 
         # Save status change history
-        if old_status != new_status:
-            InvoiceStatusHistory.objects.create(
-                invoice=invoice,
-                previous_status=old_status,
-                new_status=new_status,
-                comment=comment if new_status == 'Incomplete' else '',
-                changed_by=self.request.user
-            )
-            messages.success(self.request, "Your invoice status was updated successfully!")
+       
+        InvoiceStatusHistory.objects.create(
+            invoice=invoice,
+            previous_status=old_status,
+            new_status=new_status,
+            comment=comment if new_status == 'Incomplete' else '',
+            changed_by=self.request.user
+        )
+
+        # Save payment history if partial payment
+        if new_status == 'Not Fully Paid':
+            partial_payment = form.cleaned_data.get('partial_payment_amount')
+            if partial_payment:
+                InvoicePayment.objects.create(
+                    invoice=invoice,
+                    amount_paid=partial_payment,
+                    paid_by=self.request.user
+                )
+
+                # Auto-update status if fully paid now
+                if invoice.remaining_balance() == 0:
+                    invoice.status = 'Paid'
+                    invoice.save(update_fields=['status'])
+
+        messages.success(self.request, "Invoice status updated successfully!")
         return response
+
 
     def get_success_url(self):
         return reverse_lazy('invoice_detail', kwargs={'pk': self.object.pk})  # Or wherever you want to redirect
@@ -338,3 +387,43 @@ def export_invoices_excel(request):
     response = HttpResponse(dataset.xlsx, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="invoices.xlsx"'
     return response
+
+
+def live_search_invoices(request):
+    query = request.GET.get("q", "")
+    page_number = request.GET.get("page", 1)
+
+    invoices_qs = Invoice.objects.filter(
+        Q(invoice_number__icontains=query) |
+        Q(customer_name__icontains=query) |
+        Q(status__icontains=query)
+    ).order_by("-date_received")  # newest first
+
+    paginator = Paginator(invoices_qs, 30)  # 30 per page
+    page_obj = paginator.get_page(page_number)
+
+    rows_html = render_to_string("invoice/partials/invoice_rows.html", {"invoices": page_obj})
+    pagination_html = render_to_string("invoice/partials/pagination.html", {"page_obj": page_obj})
+
+    return JsonResponse({
+        "rows_html": rows_html,
+        "pagination_html": pagination_html
+    })
+
+
+
+
+class InvoiceStatusListView(ListView):
+    model = Invoice
+    template_name = "invoice/invoice_status.html"
+    context_object_name = "invoices"
+    paginate_by = 10
+
+    def get_queryset(self):
+        status = self.kwargs.get("status")  # get status from URL
+        qs = Invoice.objects.all().order_by("-created_at")
+        if status:
+            qs = qs.filter(status=status)
+        return qs
+
+

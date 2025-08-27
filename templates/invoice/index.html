@@ -22,7 +22,7 @@
 							<div class="box box-body bg-primary">
 							<h4>
 								<span>Total Pending Invoice</span>
-								<span class="float-end"><a class="btn btn-xs btn-danger" href="{% url 'invoice' %}">View</a></span>
+								<span class="float-end"><a class="btn btn-xs btn-danger" href="{% url 'invoice_status_list' 'Pending' %}">View</a></span>
 							</h4>
 							<br>
 							<p class="fs-30">{{total_pending}}</p>
@@ -33,7 +33,7 @@
 							<div class="box box-body bg-info">
 							<h4>
 								<span>Total Paid invoice</span>
-								<span class="float-end"><a class="btn btn-xs btn-warning" href="{% url 'invoice' %}">View</a></span>
+								<span class="float-end"><a class="btn btn-xs btn-warning" href="{% url 'invoice_status_list' 'Paid' %}">View</a></span>
 							</h4>
 							<br>
 							<p class="fs-30">{{total_paid}}</p>
@@ -44,7 +44,7 @@
 							<div class="box box-body bg-secondary">
 							<h4>
 								<span>Incomplete</span>
-								<span class="float-end"><a class="btn btn-xs btn-primary" href="{% url 'invoice' %}">View</a></span>
+								<span class="float-end"><a class="btn btn-xs btn-primary" href="{% url 'invoice_status_list' 'Incomplete' %}">View</a></span>
 							</h4>
 							<br>
 							<p class="fs-30">{{total_incomplete}}</p>
